@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Invision Solutions — Website
 
-## Getting Started
+Marketing site for Invision Solutions Ltd, a founder-led cybersecurity, DevSecOps, and cloud consultancy. Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
-First, run the development server:
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env.local` and fill in the Web3Forms access key:
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+Generate a key at [web3forms.com](https://web3forms.com) (free, no account — an access key is emailed after entering the destination address, `info@invisionsolutions.co.uk`). Without a key set, the contact form will submit but fail silently server-side (Web3Forms rejects the request).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment (Vercel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm i -g vercel   # if not already installed
+vercel login
+vercel link       # link this repo to a Vercel project
+vercel --prod
+```
 
-## Deploy on Vercel
+In the Vercel dashboard:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Project Settings → Environment Variables → add `NEXT_PUBLIC_WEB3FORMS_KEY` (Production + Preview).
+2. Project Settings → Domains → add `invisionsolutions.co.uk` and `www.invisionsolutions.co.uk`.
+3. Copy the DNS records Vercel shows (A record for the apex, CNAME for `www`) into GoDaddy's DNS management for the domain — copy them live from the dashboard rather than reusing IPs from documentation, since Vercel's anycast addresses have changed before.
+4. Wait for propagation and confirm Vercel shows "Valid Configuration" for both domains.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+- `src/app/*` — one folder per route (`/`, `/services`, `/approach`, `/case-studies`, `/contact`).
+- `src/components/*` — shared UI (header, footer, logo, glass-panel primitives, verification-ledger motif, scroll-reveal wrapper, contact form).
+- `src/lib/content.ts` — services and case study copy, shared between the Home teaser sections and the full pages.
+- `src/app/globals.css` — design tokens (colour, font, focus states) as CSS custom properties, mapped into Tailwind's `@theme`.
+
+## Known open items
+
+- **Case Studies page** ships with `[METRIC]` placeholders — needs real, anonymised figures and David's sign-off before this page goes live.
+- **Contact form** needs a real Web3Forms access key (see above) before a live submission will actually deliver to `info@invisionsolutions.co.uk`.
