@@ -36,9 +36,21 @@ The account's signup address is set as the default recipient, so this needs chan
 
 An address must be verified under Linked Emails before it can be selected as a recipient.
 
-### Free-tier limits
+### Plan and key handling
 
-250 submissions/month. Domain restriction (locking the key to `invisionsolutions.co.uk`) is a Pro feature — on the free tier the key can be reused elsewhere, so quota abuse is the practical risk, not data exposure. Rotate the key in the dashboard if that happens.
+The account is on Web3Forms Pro (10,000 submissions/month).
+
+The access key is public by design and ships in the client bundle — it can only ever deliver to the verified recipients on the account, so exposure is not the risk. Unrestricted reuse of the key on another site is, which Pro's **Settings → Security Settings → Restrict to Domains** prevents. Keep it set to `invisionsolutions.co.uk, www.invisionsolutions.co.uk`.
+
+Note that domain restriction also blocks Vercel preview deployments (`*.vercel.app`); add that host temporarily if a preview needs to submit.
+
+If the key is ever abused, rotate it in the dashboard and update `NEXT_PUBLIC_WEB3FORMS_KEY` in Vercel.
+
+### Testing submissions
+
+The form submits client-side from the browser, which is the path the site actually uses — test it at `/contact` on the deployed site.
+
+Server-side calls to the API (curl, scripts, CI) are rejected on the free plan with *"This method is not allowed... Pro plan is required"*. This restriction applies only to non-browser callers and never affected the website form.
 
 ## Deployment (Vercel)
 
