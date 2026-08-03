@@ -40,17 +40,60 @@ An address must be verified under Linked Emails before it can be selected as a r
 
 The account is on Web3Forms Pro (10,000 submissions/month).
 
-The access key is public by design and ships in the client bundle — it can only ever deliver to the verified recipients on the account, so exposure is not the risk. Unrestricted reuse of the key on another site is, which Pro's **Settings → Security Settings → Restrict to Domains** prevents. Keep it set to `invisionsolutions.co.uk, www.invisionsolutions.co.uk`.
+Access keys are public by design and ship in the client bundle — they can only
+ever deliver to the verified recipients on the account, so exposure is not the
+risk. Unrestricted reuse of a key on another site is, which Pro's **Settings →
+Security Settings → Restrict to Domains** prevents. Keep it set to
+`invisionsolutions.co.uk, www.invisionsolutions.co.uk` on every form.
 
-Note that domain restriction also blocks Vercel preview deployments (`*.vercel.app`); add that host temporarily if a preview needs to submit.
+Domain restriction also blocks Vercel preview deployments (`*.vercel.app`); add
+that host temporarily if a preview needs to submit.
 
-If the key is ever abused, rotate it in the dashboard and update `NEXT_PUBLIC_WEB3FORMS_KEY` in Vercel.
+If a key is ever abused, rotate it in the dashboard and update the matching
+Vercel environment variable.
+
+### Routing enquiries to different mailboxes
+
+`/enquiries` sends each department's form to its own mailbox. Web3Forms binds
+one access key to one form, and recipients are configured per form in the
+dashboard — there is no client-side recipient override. So each mailbox needs
+its own Web3Forms form:
+
+1. Create a form in Web3Forms per mailbox (Sales, Support, Billing, Invoices,
+   Contracts, Partnerships, General).
+2. Set that form's recipient to the matching verified address.
+3. Copy its access key into the matching `NEXT_PUBLIC_WEB3FORMS_KEY_*` variable
+   in Vercel — see `.env.example` for the full list.
+4. Redeploy, because `NEXT_PUBLIC_` values are inlined at build time.
+
+Any variable left unset falls back to `NEXT_PUBLIC_WEB3FORMS_KEY`, which
+delivers to `info@`. The page therefore works before those forms exist and gets
+more precise as each key is added — nothing is silently dropped. Each
+submission carries a distinct subject line, so mail rules can separate them even
+while everything shares one key.
 
 ### Testing submissions
 
-The form submits client-side from the browser, which is the path the site actually uses — test it at `/contact` on the deployed site.
+The forms submit client-side from the browser, which is the path the site
+actually uses — test them on the deployed site.
 
-Server-side calls to the API (curl, scripts, CI) are rejected on the free plan with *"This method is not allowed... Pro plan is required"*. This restriction applies only to non-browser callers and never affected the website form.
+Server-side calls to the API (curl, scripts, CI) are rejected with *"This method
+is not allowed... Pro plan is required"* unless the calling IP is whitelisted by
+Web3Forms support. That restriction applies only to non-browser callers and
+never affects the website forms.
+
+## Brand assets
+
+The downloadable logo files in `public/brand/` are generated:
+
+```bash
+npm run build   # must run first — the generator reads Next's webfont files
+npm run brand
+```
+
+`scripts/generate-brand-assets.mjs` converts the wordmark type to outlines so
+the SVGs render correctly without Space Grotesk installed. Mark geometry lives
+in `src/lib/brand.ts` and is mirrored in the generator — change both together.
 
 ## Deployment (Vercel)
 

@@ -1,0 +1,88 @@
+/**
+ * Enquiry routing.
+ *
+ * Web3Forms binds one access key to one form, and a form's recipients are set
+ * in its dashboard — there is no client-side recipient override (that would
+ * make the endpoint an open relay). So routing an enquiry to a specific mailbox
+ * means a separate Web3Forms form, with its own access key, per mailbox.
+ *
+ * Each entry reads its own NEXT_PUBLIC_WEB3FORMS_KEY_* variable and falls back
+ * to the general key when that variable is unset. The fallback delivers to
+ * info@, which is the catch-all, so the page works before every form exists and
+ * gets more precise as keys are added. Nothing silently disappears.
+ *
+ * NEXT_PUBLIC_ values are inlined at build time, so process.env cannot be
+ * indexed dynamically here — each key must be written out literally.
+ */
+
+export type Mailbox = {
+  slug: string;
+  address: string;
+  label: string;
+  description: string;
+  accessKey: string | undefined;
+};
+
+const GENERAL = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+export const MAILBOXES: Mailbox[] = [
+  {
+    slug: "sales",
+    address: "sales@invisionsolutions.co.uk",
+    label: "Sales & pricing",
+    description:
+      "Day rates, retainer pricing, and what a given scope is likely to cost.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_SALES ?? GENERAL,
+  },
+  {
+    slug: "contact",
+    address: "contact@invisionsolutions.co.uk",
+    label: "General enquiry",
+    description:
+      "Anything that does not fit the other routes — including introductions.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_CONTACT ?? GENERAL,
+  },
+  {
+    slug: "support",
+    address: "support@invisionsolutions.co.uk",
+    label: "Client support",
+    description:
+      "Existing engagements: questions on delivered work, handover, or documentation.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_SUPPORT ?? GENERAL,
+  },
+  {
+    slug: "billing",
+    address: "billing@invisionsolutions.co.uk",
+    label: "Billing",
+    description: "Payment terms, purchase orders, and billing arrangements.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_BILLING ?? GENERAL,
+  },
+  {
+    slug: "invoice",
+    address: "invoice@invisionsolutions.co.uk",
+    label: "Invoices",
+    description: "Invoice queries, copies, remittance advice, and corrections.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_INVOICE ?? GENERAL,
+  },
+  {
+    slug: "admin",
+    address: "admin@invisionsolutions.co.uk",
+    label: "Contracts & admin",
+    description:
+      "Supplier onboarding, NDAs, insurance certificates, and compliance paperwork.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_ADMIN ?? GENERAL,
+  },
+  {
+    slug: "hello",
+    address: "hello@invisionsolutions.co.uk",
+    label: "Partnerships & press",
+    description:
+      "Collaborations, speaking, podcasts, and anything media-related.",
+    accessKey: process.env.NEXT_PUBLIC_WEB3FORMS_KEY_HELLO ?? GENERAL,
+  },
+];
+
+/** Address shown in the footer and as the general-purpose public address. */
+export const PUBLIC_CONTACT_ADDRESS = "contact@invisionsolutions.co.uk";
+export const SALES_ADDRESS = "sales@invisionsolutions.co.uk";
+export const TESTIMONIALS_ADDRESS = "hello@invisionsolutions.co.uk";
