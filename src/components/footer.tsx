@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoMark } from "./logo";
+import { SocialLinks } from "./social-icons";
 
 const NAV_LINKS = [
   { href: "/services", label: "Services" },
@@ -27,6 +28,7 @@ function Footer() {
               principal consultant, direct engagement, enterprise-grade
               outcomes.
             </p>
+            <SocialLinks className="mt-6" />
           </div>
 
           <nav className="flex flex-col gap-3">

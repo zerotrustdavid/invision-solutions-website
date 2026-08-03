@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { VerificationLedger } from "@/components/verification-ledger";
 import { Section, Eyebrow, GlassCard, PrimaryButton, NumberedStep } from "@/components/ui";
+import { PERSONAL_LINKEDIN_URL } from "@/components/social-icons";
 
 export const metadata: Metadata = {
   title: "Approach",
@@ -84,6 +85,14 @@ export default function ApproachPage() {
             <p className="mt-2 font-mono text-xs uppercase tracking-widest text-slate">
               Principal Consultant
             </p>
+            <a
+              href={PERSONAL_LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-trust-blue-text underline decoration-trust-blue-text/40 underline-offset-4 transition-colors hover:text-signal-gold hover:decoration-signal-gold/40"
+            >
+              Connect on LinkedIn
+            </a>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="text-lg leading-relaxed text-slate">
