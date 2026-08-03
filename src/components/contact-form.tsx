@@ -19,7 +19,11 @@ function ContactForm() {
     setStatus("submitting");
 
     const form = event.currentTarget;
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+    // Trim defensively: env values pasted into a dashboard commonly pick up a
+    // leading tab or trailing newline, and Web3Forms rejects the key outright
+    // as a malformed UUID. The surrounding whitespace is invisible everywhere
+    // it would normally be inspected, so strip it rather than trust the input.
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY?.trim();
 
     // NEXT_PUBLIC_ vars are inlined at build time, so an unset variable in the
     // deploy environment produces a silent, indistinguishable failure at runtime.
