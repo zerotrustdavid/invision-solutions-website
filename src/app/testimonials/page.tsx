@@ -79,10 +79,26 @@ export default function TestimonialsPage() {
           <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-5xl">
             What it is actually like to work with Invision Solutions.
           </h1>
+          {/*
+            Reads as an invitation until there is something to show, and
+            switches to the provenance statement once quotes are published —
+            which only makes sense to claim when quotes actually exist.
+          */}
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate">
-            Every testimonial here is written by a real client and published with
-            their permission. Nothing on this page is paraphrased, composited, or
-            written on anyone&apos;s behalf.
+            {TESTIMONIALS.length > 0 ? (
+              <>
+                Every testimonial here is written by a real client and published
+                with their permission. Nothing on this page is paraphrased,
+                composited, or written on anyone&apos;s behalf.
+              </>
+            ) : (
+              <>
+                A client&apos;s words carry more weight than anything I could
+                write about my own work. If I&apos;ve delivered for you, the
+                form below takes a few minutes — and you decide how it appears,
+                or whether it appears at all.
+              </>
+            )}
           </p>
         </Reveal>
       </Section>
