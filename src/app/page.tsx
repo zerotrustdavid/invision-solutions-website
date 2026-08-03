@@ -62,7 +62,7 @@ export default function Home() {
           </div>
 
           <div className="lg:justify-self-end">
-            <SurfaceCard className="w-full lg:max-w-sm">
+            <SurfaceCard className="w-full lg:max-w-md">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold-ink">
                 Verification ledger
               </p>

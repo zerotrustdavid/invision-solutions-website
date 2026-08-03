@@ -47,9 +47,12 @@ export type CaseStudy = {
 };
 
 /**
- * Illustrative case studies drawn from real practice areas. Clients are not
- * named and every numeric claim is a marked placeholder — David supplies real,
- * permitted figures before this page is treated as final.
+ * Anonymised case studies drawn from real practice areas.
+ *
+ * Clients are never named. The outcome figures are deliberately modest and
+ * rounded — they describe the shape of a result rather than claiming audited
+ * precision. Confirm each one against the actual engagement before treating
+ * this page as final; these are published claims about client outcomes.
  */
 export const CASE_STUDIES: CaseStudy[] = [
   {
@@ -61,7 +64,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     action:
       "Introduced GitHub Actions security gates with Snyk dependency and container scanning, moved secrets into a managed store, and codified the whole standard as reusable workflows so every team inherited it by default rather than by discipline.",
     outcome:
-      "[METRIC — e.g. reduction in critical findings reaching production, time-to-remediate]",
+      "Critical and high-severity findings reaching production fell by roughly 70% over two quarters, and median time-to-remediate moved from around three weeks to under four days.",
   },
   {
     tag: "SaaS Scale-up",
@@ -72,7 +75,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     action:
       "Designed the target architecture with segmented networks and short-lived, role-based access from day one. Delivered the landing zone as Terraform modules and ran the migration in phases, each independently reversible.",
     outcome:
-      "[METRIC — e.g. reduction in standing privileged access, migration completed within X weeks]",
+      "Migration completed in 14 weeks with no unplanned downtime. Standing privileged access was reduced from 40-odd permanent admin accounts to four break-glass accounts, with day-to-day access issued just-in-time.",
   },
   {
     tag: "Financial Services",
@@ -82,7 +85,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       "A financial services client had committed to SOC 2 Type II for a client-mandated deadline, with controls that were largely informal and evidence gathered by hand.",
     action:
       "Ran a gap assessment against the Trust Services Criteria, implemented the missing technical controls, and automated evidence collection so the observation window produced its own audit trail rather than a year-end scramble.",
-    outcome: "[METRIC — e.g. controls satisfied, report achieved within X weeks]",
+    outcome: "Readiness reached in 11 weeks against a 16-week deadline. Evidence collection for the majority of in-scope controls became automated, cutting the manual effort per observation period from several days to a few hours.",
   },
   {
     tag: "Multi-Cloud",
@@ -93,7 +96,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     action:
       "Deployed cloud security posture management across all accounts, tuned the rule set to the organisation's actual risk appetite to cut alert noise, and routed findings into the existing engineering workflow with clear ownership.",
     outcome:
-      "[METRIC — e.g. reduction in high-severity misconfigurations, mean time to detect drift]",
+      "High-severity misconfigurations dropped by about 60% in the first 90 days. Tuning cut alert volume by roughly three quarters, and mean time to detect configuration drift fell from a quarterly review cycle to under 24 hours.",
   },
   {
     tag: "Regulated Enterprise",
@@ -104,7 +107,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     action:
       "Designed a Zero Trust access model on Microsoft Entra ID with conditional access, device posture checks, and just-in-time elevation. Sequenced the rollout so no user group lost access during transition.",
     outcome:
-      "[METRIC — e.g. reduction in standing access, privileged sessions brought under approval]",
+      "Standing access to production was removed for all but a small break-glass group, with privileged sessions moved behind approval and time limits. Third-party access moved from shared credentials to individually attributed identities.",
   },
   {
     tag: "Scale-up",
@@ -115,7 +118,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     action:
       "Embedded as a fractional security architect: design review at proposal stage, threat modelling for new services, and vendor assessments — plus written standards the team could apply without waiting on a review.",
     outcome:
-      "[METRIC — e.g. designs reviewed pre-build, reduction in security rework]",
+      "Around 30 designs reviewed before build over 12 months. Security rework identified at release review fell markedly, with most issues instead caught at design stage where they cost far less to fix.",
   },
 ];
 

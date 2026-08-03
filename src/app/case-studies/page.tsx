@@ -60,7 +60,7 @@ export default function CaseStudiesPage() {
                     <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-ink">
                       Outcome
                     </dt>
-                    <dd className="mt-1 italic">{study.outcome}</dd>
+                    <dd className="mt-1 text-ink">{study.outcome}</dd>
                   </div>
                 </dl>
               </SurfaceCard>

@@ -15,8 +15,12 @@ function VerificationLedger({
   className?: string;
 }) {
   return (
+    // Size is deliberately fixed rather than stepping up at sm:. These lines
+    // are set with whitespace-nowrap, so any width increase overflows the card
+    // that contains them instead of wrapping. Tracking is tuned so the longest
+    // line clears the narrowest container the motif is used in.
     <div
-      className={`font-mono text-xs tracking-[0.16em] text-slate sm:text-sm ${className}`}
+      className={`font-mono text-[11px] leading-relaxed tracking-[0.08em] text-slate ${className}`}
     >
       {lines.map((line, i) => (
         <motion.p
