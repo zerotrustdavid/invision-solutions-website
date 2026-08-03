@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { VerificationLedger } from "@/components/verification-ledger";
 import { Section, Eyebrow, GlassCard, PrimaryButton, NumberedStep } from "@/components/ui";
 import { PERSONAL_LINKEDIN_URL } from "@/components/social-icons";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Approach",
   description:
     "David Levi is the founder and principal consultant at Invision Solutions — AWS and Azure certified, working directly across cloud security, DevSecOps, and compliance.",
-};
+  path: "/approach",
+});
 
 const PROCESS = [
   {

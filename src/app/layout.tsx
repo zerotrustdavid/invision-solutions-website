@@ -3,6 +3,7 @@ import { Space_Grotesk, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { MotionConfig } from "motion/react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { SITE_URL, SITE_NAME } from "@/lib/metadata";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -24,7 +25,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://invisionsolutions.co.uk"),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: {
     default: "Invision Solutions — Cybersecurity, DevSecOps & Cloud Consultancy",
     template: "%s — Invision Solutions",
@@ -35,8 +37,8 @@ export const metadata: Metadata = {
     title: "Invision Solutions — Cybersecurity, DevSecOps & Cloud Consultancy",
     description:
       "Senior-level security expertise. No layers in between. One principal consultant, direct engagement, enterprise-grade outcomes.",
-    url: "https://invisionsolutions.co.uk",
-    siteName: "Invision Solutions",
+    url: SITE_URL,
+    siteName: SITE_NAME,
     locale: "en_GB",
     type: "website",
   },

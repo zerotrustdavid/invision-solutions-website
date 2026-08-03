@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { Section, Eyebrow, GlassCard, PrimaryButton, StatusTag } from "@/components/ui";
 import { CASE_STUDIES } from "@/lib/content";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Case Studies",
   description:
     "Illustrative case studies covering platform security uplift, Zero Trust migration, and ISO 27001 compliance sprints.",
-};
+  path: "/case-studies",
+});
 
 export default function CaseStudiesPage() {
   return (

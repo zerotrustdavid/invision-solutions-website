@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { Reveal } from "@/components/reveal";
 import { ContactForm } from "@/components/contact-form";
 import { Section, Eyebrow } from "@/components/ui";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description:
     "Start a conversation with David Levi, principal consultant at Invision Solutions. Every message reaches David directly.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

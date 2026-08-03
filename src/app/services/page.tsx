@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { Section, Eyebrow, GlassCard, PrimaryButton } from "@/components/ui";
 import { SERVICES } from "@/lib/content";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Services",
   description:
     "Cloud security architecture, DevSecOps, SIEM engineering, compliance, and fractional security leadership — five ways to work with Invision Solutions.",
-};
+  path: "/services",
+});
 
 const ENGAGEMENT_MODELS = [
   {
