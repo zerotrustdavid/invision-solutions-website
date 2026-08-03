@@ -19,7 +19,26 @@ Copy `.env.example` to `.env.local` and fill in the Web3Forms access key:
 cp .env.example .env.local
 ```
 
-Generate a key at [web3forms.com](https://web3forms.com) (free, no account — an access key is emailed after entering the destination address, `info@invisionsolutions.co.uk`). Without a key set, the contact form will submit but fail silently server-side (Web3Forms rejects the request).
+Without a key set, the form will submit but Web3Forms rejects the request server-side.
+
+### Getting the access key
+
+Web3Forms is account-based. Sign up at [web3forms.com](https://web3forms.com); a form and an access key are created for you immediately, shown in the dashboard under **Form Setup**. The key is public by design — it is safe in client-side code, which is why it uses the `NEXT_PUBLIC_` prefix.
+
+### Pointing submissions at the right inbox
+
+The account's signup address is set as the default recipient, so this needs changing explicitly:
+
+1. Sidebar → **Linked Emails** → add the destination address
+2. Verify it via the email Web3Forms sends **to that address**
+3. Form → **Settings → Email Configuration → Recipient Emails** → add the verified address, remove the signup default
+4. **Save Settings**
+
+An address must be verified under Linked Emails before it can be selected as a recipient.
+
+### Free-tier limits
+
+250 submissions/month. Domain restriction (locking the key to `invisionsolutions.co.uk`) is a Pro feature — on the free tier the key can be reused elsewhere, so quota abuse is the practical risk, not data exposure. Rotate the key in the dashboard if that happens.
 
 ## Deployment (Vercel)
 
