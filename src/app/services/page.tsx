@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { pageMetadata } from "@/lib/metadata";
 import { ArrowRight } from "lucide-react";
+import { pageMetadata } from "@/lib/metadata";
 import { Reveal } from "@/components/reveal";
-import { Section, Eyebrow, GlassCard, PrimaryButton } from "@/components/ui";
+import { Section, Eyebrow, SurfaceCard, PrimaryButton } from "@/components/ui";
 import { SERVICES } from "@/lib/content";
+import { SALES_ADDRESS, PUBLIC_CONTACT_ADDRESS } from "@/lib/mailboxes";
 
 export const metadata: Metadata = pageMetadata({
   title: "Services",
@@ -30,10 +31,10 @@ const ENGAGEMENT_MODELS = [
 export default function ServicesPage() {
   return (
     <>
-      <Section className="pt-24 sm:pt-32">
+      <Section className="pt-20 sm:pt-24">
         <Reveal>
           <Eyebrow>Services</Eyebrow>
-          <h1 className="mt-3 max-w-2xl font-display text-4xl text-platinum sm:text-5xl">
+          <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-5xl">
             Five ways to work together — as a one-off assessment, an embedded
             build, or ongoing advisory.
           </h1>
@@ -43,48 +44,61 @@ export default function ServicesPage() {
         </Reveal>
       </Section>
 
-      <Section className="border-t border-platinum/5 !pt-0">
+      <Section className="!pt-0">
         <div className="grid gap-6 lg:grid-cols-2">
           {SERVICES.map((service, i) => (
-            <Reveal key={service.slug} delay={i * 0.08}>
-              <GlassCard className="h-full">
-                <span className="font-mono text-xs text-signal-gold">
+            <Reveal key={service.slug} delay={i * 0.07}>
+              <SurfaceCard className="h-full">
+                <span className="font-mono text-xs text-gold-ink">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h2 className="mt-3 font-display text-2xl text-platinum">
+                <h2 className="mt-3 font-display text-2xl font-medium tracking-tight text-ink">
                   {service.title}
                 </h2>
-                <p className="mt-4 text-sm leading-relaxed text-slate">
-                  {service.summary}
-                </p>
-              </GlassCard>
+                <p className="mt-4 leading-relaxed text-slate">{service.summary}</p>
+              </SurfaceCard>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      <Section className="border-t border-platinum/5">
+      <Section tone="panel" className="border-t border-line">
         <Reveal>
           <Eyebrow>Engagement Models</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl text-platinum sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             How the work is structured.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {ENGAGEMENT_MODELS.map((model, i) => (
             <Reveal key={model.title} delay={i * 0.1}>
-              <GlassCard className="h-full">
-                <h3 className="font-display text-lg text-platinum">{model.title}</h3>
+              <SurfaceCard raised className="h-full">
+                <h3 className="font-display text-lg font-medium text-ink">
+                  {model.title}
+                </h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate">{model.body}</p>
-              </GlassCard>
+              </SurfaceCard>
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.15}>
+          <p className="mt-10 text-sm leading-relaxed text-slate">
+            Pricing question? Day rates and retainer costs go to{" "}
+            <a
+              href={`mailto:${SALES_ADDRESS}`}
+              className="text-blue-ink underline decoration-blue-ink/30 underline-offset-4 hover:decoration-blue-ink"
+            >
+              {SALES_ADDRESS}
+            </a>
+            .
+          </p>
+        </Reveal>
       </Section>
 
-      <Section className="border-t border-platinum/5">
-        <Reveal className="glass-panel rounded-lg px-8 py-14 text-center sm:px-16">
-          <h2 className="font-display text-3xl text-platinum sm:text-4xl">
+      <Section>
+        <Reveal className="surface rounded-2xl px-8 py-14 text-center sm:px-16">
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Not sure which model fits? Let&apos;s talk it through.
           </h2>
           <div className="mt-8 flex justify-center">
@@ -93,6 +107,16 @@ export default function ServicesPage() {
               <ArrowRight size={16} />
             </PrimaryButton>
           </div>
+          <p className="mt-6 text-sm text-slate">
+            Or email{" "}
+            <a
+              href={`mailto:${PUBLIC_CONTACT_ADDRESS}`}
+              className="text-blue-ink underline decoration-blue-ink/30 underline-offset-4 hover:decoration-blue-ink"
+            >
+              {PUBLIC_CONTACT_ADDRESS}
+            </a>
+            .
+          </p>
         </Reveal>
       </Section>
     </>

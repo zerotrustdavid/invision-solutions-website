@@ -5,10 +5,11 @@ import { Reveal } from "@/components/reveal";
 import {
   Section,
   Eyebrow,
-  GlassCard,
+  SurfaceCard,
   PrimaryButton,
   SecondaryButton,
   NumberedStep,
+  StatusTag,
 } from "@/components/ui";
 import { SERVICES, CASE_STUDIES, CERTIFICATIONS_AND_STACK } from "@/lib/content";
 
@@ -38,52 +39,53 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[92vh] items-center overflow-hidden px-6 sm:px-10">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(62,111,224,0.08),transparent_45%),radial-gradient(circle_at_80%_60%,rgba(201,162,39,0.06),transparent_45%)]"
-        />
-        <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+      <section className="relative overflow-hidden px-6 pb-20 pt-20 sm:px-10 sm:pb-28 sm:pt-28">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-14 lg:grid-cols-[1.35fr_1fr] lg:items-center">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-signal-gold">
-              Cybersecurity · DevSecOps · Cloud Architecture
-            </p>
-            <h1 className="mt-6 font-display text-5xl leading-[1.05] text-platinum sm:text-6xl lg:text-[4.5rem]">
-              Senior-level security expertise. No layers in between.
+            <Eyebrow>Cybersecurity · DevSecOps · Cloud Architecture</Eyebrow>
+            <h1 className="mt-6 font-display text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
+              Senior-level security expertise.
+              <span className="block text-slate">No layers in between.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate">
-              Invision Solutions is a founder-led cybersecurity, DevSecOps,
-              and cloud consultancy. One principal consultant, direct
-              engagement, enterprise-grade outcomes.
+            <p className="mt-7 max-w-xl text-lg leading-relaxed text-slate">
+              Invision Solutions is a founder-led cybersecurity, DevSecOps, and
+              cloud consultancy. One principal consultant, direct engagement,
+              enterprise-grade outcomes.
             </p>
-            <div className="mt-10">
+            <div className="mt-10 flex flex-wrap gap-3">
               <PrimaryButton href="/contact">
                 Start a conversation
                 <ArrowRight size={16} />
               </PrimaryButton>
+              <SecondaryButton href="/services">View services</SecondaryButton>
             </div>
           </div>
 
           <div className="lg:justify-self-end">
-            <VerificationLedger
-              lines={[
-                "SESSION: DIRECT — NO INTERMEDIARY",
-                "ROLE: PRINCIPAL CONSULTANT",
-                "ACCESS MODEL: ZERO TRUST",
-                "STATUS: VERIFIED",
-              ]}
-              className="border-l border-trust-blue/20 pl-6"
-            />
+            <SurfaceCard className="w-full lg:max-w-sm">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold-ink">
+                Verification ledger
+              </p>
+              <VerificationLedger
+                className="mt-4"
+                lines={[
+                  "SESSION: DIRECT — NO INTERMEDIARY",
+                  "ROLE: PRINCIPAL CONSULTANT",
+                  "ACCESS MODEL: ZERO TRUST",
+                  "STATUS: VERIFIED",
+                ]}
+              />
+            </SurfaceCard>
           </div>
         </div>
       </section>
 
       {/* Certifications / stack strip */}
-      <Section className="!py-14 border-y border-platinum/5">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-slate text-center">
+      <Section tone="panel" className="!py-12 border-y border-line">
+        <p className="text-center font-mono text-xs uppercase tracking-[0.28em] text-slate">
           Certified &amp; Aligned
         </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {CERTIFICATIONS_AND_STACK.map((item) => (
             <span
               key={item}
@@ -95,41 +97,48 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* Why Invision — three pillars */}
+      {/* Why Invision */}
       <Section>
         <Reveal>
           <Eyebrow>Why Invision</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl text-platinum sm:text-4xl">
+          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             The case for one expert instead of a team.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {PILLARS.map((pillar, i) => (
             <Reveal key={pillar.title} delay={i * 0.1}>
-              <GlassCard className="h-full">
-                <h3 className="font-display text-xl text-platinum">{pillar.title}</h3>
+              <SurfaceCard className="h-full">
+                <h3 className="font-display text-xl font-medium text-ink">
+                  {pillar.title}
+                </h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate">{pillar.body}</p>
-              </GlassCard>
+              </SurfaceCard>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      {/* Services overview */}
-      <Section className="border-t border-platinum/5">
+      {/* Services */}
+      <Section tone="panel" className="border-t border-line">
         <Reveal>
           <Eyebrow>Services</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl text-platinum sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Five ways to work together.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((service, i) => (
-            <Reveal key={service.slug} delay={i * 0.08}>
-              <Link href="/services">
-                <GlassCard className="h-full transition-colors hover:border-signal-gold/20">
-                  <h3 className="font-display text-lg text-platinum">{service.title}</h3>
-                </GlassCard>
+            <Reveal key={service.slug} delay={i * 0.07}>
+              <Link href="/services" className="block h-full">
+                <SurfaceCard
+                  raised
+                  className="h-full transition-shadow hover:shadow-md"
+                >
+                  <h3 className="font-display text-lg font-medium text-ink">
+                    {service.title}
+                  </h3>
+                </SurfaceCard>
               </Link>
             </Reveal>
           ))}
@@ -143,16 +152,16 @@ export default function Home() {
       </Section>
 
       {/* Approach snapshot */}
-      <Section className="border-t border-platinum/5">
+      <Section>
         <Reveal>
           <Eyebrow>Approach</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl text-platinum sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             A direct, four-step process.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS_SNAPSHOT.map((step, i) => (
-            <Reveal key={step.number} delay={i * 0.08}>
+            <Reveal key={step.number} delay={i * 0.07}>
               <NumberedStep number={step.number} title={step.title}>
                 {step.body}
               </NumberedStep>
@@ -168,23 +177,25 @@ export default function Home() {
       </Section>
 
       {/* Case studies teaser */}
-      <Section className="border-t border-platinum/5">
+      <Section tone="panel" className="border-t border-line">
         <Reveal>
           <Eyebrow>Case Studies</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl text-platinum sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             A sample of the work.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {CASE_STUDIES.map((study, i) => (
+          {CASE_STUDIES.slice(0, 3).map((study, i) => (
             <Reveal key={study.title} delay={i * 0.1}>
-              <GlassCard className="h-full">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-signal-gold border border-signal-gold/30 rounded px-2 py-1">
-                  {study.tag}
-                </span>
-                <h3 className="mt-4 font-display text-lg text-platinum">{study.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate">{study.situation}</p>
-              </GlassCard>
+              <SurfaceCard raised className="h-full">
+                <StatusTag>{study.discipline}</StatusTag>
+                <h3 className="mt-4 font-display text-lg font-medium text-ink">
+                  {study.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate">
+                  {study.situation}
+                </p>
+              </SurfaceCard>
             </Reveal>
           ))}
         </div>
@@ -196,10 +207,10 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* Closing CTA band */}
-      <Section className="border-t border-platinum/5">
-        <Reveal className="glass-panel rounded-lg px-8 py-14 text-center sm:px-16">
-          <h2 className="font-display text-3xl text-platinum sm:text-4xl">
+      {/* Closing CTA */}
+      <Section>
+        <Reveal className="surface rounded-2xl px-8 py-14 text-center sm:px-16">
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Most engagements start with a conversation, not a proposal.
           </h2>
           <div className="mt-8 flex justify-center">

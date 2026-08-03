@@ -1,44 +1,37 @@
 @import "tailwindcss";
 
+/*
+ * Light theme. Every text/background pairing below meets WCAG AA (4.5:1).
+ * Gold needs two tokens: `gold` is bright enough to carry the brand as a fill
+ * or in the logo, but only reaches 2.4:1 on white, so `gold-ink` (5.8:1) is the
+ * variant used whenever gold has to be read as text.
+ */
 :root {
-  --color-void: #0a0c10;
-  --color-panel: #14171d;
-  --color-platinum: #e7e4dd;
-  --color-slate: #8b8f98;
-  --color-signal-gold: #c9a227;
-  --color-trust-blue: #3e6fe0;
-  /* Lighter tint of trust-blue for small text on dark backgrounds —
-     trust-blue itself is ~4.2:1 on void, just under WCAG AA (4.5:1)
-     at body-text sizes. Used for text only; borders/rules/decorative
-     motif elements keep the exact spec'd trust-blue. */
-  --color-trust-blue-text: #6690ea;
+  --color-paper: #ffffff;
+  --color-panel: #f6f5f1;
+  --color-panel-alt: #faf9f6;
+  --color-ink: #16181d;
+  --color-slate: #5c6068;
+  --color-line: #e5e3dd;
+  --color-gold: #c9a227;
+  --color-gold-ink: #7e6212;
+  --color-blue-ink: #2352be;
 }
 
 @theme inline {
-  --color-void: var(--color-void);
+  --color-paper: var(--color-paper);
   --color-panel: var(--color-panel);
-  --color-platinum: var(--color-platinum);
+  --color-panel-alt: var(--color-panel-alt);
+  --color-ink: var(--color-ink);
   --color-slate: var(--color-slate);
-  --color-signal-gold: var(--color-signal-gold);
-  --color-trust-blue: var(--color-trust-blue);
-  --color-trust-blue-text: var(--color-trust-blue-text);
+  --color-line: var(--color-line);
+  --color-gold: var(--color-gold);
+  --color-gold-ink: var(--color-gold-ink);
+  --color-blue-ink: var(--color-blue-ink);
 
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-ibm-plex-sans);
   --font-mono: var(--font-ibm-plex-mono);
-
-  --animate-ledger-fade: ledger-fade 0.8s ease-out forwards;
-}
-
-@keyframes ledger-fade {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 html {
@@ -46,25 +39,38 @@ html {
 }
 
 body {
-  background-color: var(--color-void);
-  color: var(--color-platinum);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background-color: var(--color-signal-gold);
-  color: var(--color-void);
+  background-color: var(--color-gold);
+  color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-signal-gold);
+  outline: 2px solid var(--color-gold-ink);
   outline-offset: 3px;
+  border-radius: 2px;
 }
 
-.glass-panel {
-  background-color: color-mix(in srgb, var(--color-panel) 60%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-trust-blue) 10%, transparent);
-  backdrop-filter: blur(12px);
+/*
+ * Surface card. On a light theme the dark-mode glass treatment reads as muddy,
+ * so cards are a flat warm tint with a hairline rule instead.
+ */
+.surface {
+  background-color: var(--color-panel);
+  border: 1px solid var(--color-line);
+}
+
+.surface-raised {
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-line);
+  box-shadow:
+    0 1px 2px rgb(22 24 29 / 0.04),
+    0 8px 24px -12px rgb(22 24 29 / 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {

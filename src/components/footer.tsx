@@ -1,26 +1,34 @@
 import Link from "next/link";
 import { LogoMark } from "./logo";
 import { SocialLinks } from "./social-icons";
+import { PUBLIC_CONTACT_ADDRESS } from "@/lib/mailboxes";
 
-const NAV_LINKS = [
+const SITE_LINKS = [
   { href: "/services", label: "Services" },
   { href: "/approach", label: "Approach" },
   { href: "/case-studies", label: "Case Studies" },
+  { href: "/testimonials", label: "Testimonials" },
+];
+
+const CONTACT_LINKS = [
   { href: "/contact", label: "Contact" },
+  { href: "/enquiries", label: "Enquiries by department" },
+  { href: "/brand", label: "Brand assets" },
 ];
 
 function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-platinum/5">
-      <div className="mx-auto max-w-6xl px-6 py-12 sm:px-10">
-        <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
+    <footer className="border-t border-line bg-panel-alt">
+      <div className="mx-auto max-w-6xl px-6 py-14 sm:px-10">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="max-w-sm">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <LogoMark size={26} />
-              <span className="font-display uppercase text-platinum" style={{ letterSpacing: "0.05em" }}>
-                Invision
+              <span className="font-display text-lg font-semibold tracking-tight">
+                <span className="text-ink">In</span>
+                <span className="text-gold-ink">vision</span>
               </span>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-slate">
@@ -32,25 +40,46 @@ function Footer() {
           </div>
 
           <nav className="flex flex-col gap-3">
-            {NAV_LINKS.map((link) => (
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate">
+              Site
+            </p>
+            {SITE_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-slate transition-colors hover:text-platinum"
+                className="text-sm text-slate transition-colors hover:text-ink"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="flex flex-col gap-3">
+          <nav className="flex flex-col gap-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate">
+              Get in touch
+            </p>
+            {CONTACT_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-slate transition-colors hover:text-ink"
+              >
+                {link.label}
+              </Link>
+            ))}
             <a
-              href="mailto:david@invisionsolutions.co.uk"
-              className="text-sm text-slate transition-colors hover:text-platinum"
+              href={`mailto:${PUBLIC_CONTACT_ADDRESS}`}
+              className="text-sm text-blue-ink underline decoration-blue-ink/30 underline-offset-4 transition-colors hover:decoration-blue-ink"
             >
-              david@invisionsolutions.co.uk
+              {PUBLIC_CONTACT_ADDRESS}
             </a>
-            <p className="text-sm text-slate">
+          </nav>
+
+          <div className="flex flex-col gap-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate">
+              Company
+            </p>
+            <p className="text-sm leading-relaxed text-slate">
               Invision Solutions Ltd
               <br />
               Company No. 16056944
@@ -60,9 +89,9 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-platinum/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate">
-            SESSION: CLOSED — LOG {year} — ACCESS: GRANTED
+            Session: closed — log {year} — access: granted
           </p>
           <p className="text-xs text-slate">
             © {year} Invision Solutions Ltd. All rights reserved.

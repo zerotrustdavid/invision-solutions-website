@@ -5,13 +5,18 @@ function Section({
   children,
   className = "",
   id,
+  tone = "paper",
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
+  tone?: "paper" | "panel";
 }) {
   return (
-    <section id={id} className={`px-6 py-20 sm:px-10 sm:py-28 ${className}`}>
+    <section
+      id={id}
+      className={`px-6 py-20 sm:px-10 sm:py-28 ${tone === "panel" ? "bg-panel-alt" : "bg-paper"} ${className}`}
+    >
       <div className="mx-auto max-w-6xl">{children}</div>
     </section>
   );
@@ -19,52 +24,49 @@ function Section({
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="font-mono text-xs uppercase tracking-[0.3em] text-signal-gold">
+    <p className="font-mono text-xs uppercase tracking-[0.28em] text-gold-ink">
       {children}
     </p>
   );
 }
 
-function GlassCard({
+function SurfaceCard({
   children,
   className = "",
+  raised = false,
+  id,
 }: {
   children: ReactNode;
   className?: string;
+  raised?: boolean;
+  id?: string;
 }) {
   return (
-    <div className={`glass-panel rounded-lg p-6 sm:p-8 ${className}`}>{children}</div>
+    <div
+      id={id}
+      className={`${raised ? "surface-raised" : "surface"} rounded-xl p-6 sm:p-8 ${className}`}
+    >
+      {children}
+    </div>
   );
 }
 
-function PrimaryButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: ReactNode;
-}) {
+function PrimaryButton({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 rounded-md bg-signal-gold px-6 py-3 font-sans text-sm font-medium text-void transition-colors hover:bg-signal-gold/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-gold"
+      className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-sm font-medium text-paper transition-opacity hover:opacity-88"
     >
       {children}
     </Link>
   );
 }
 
-function SecondaryButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: ReactNode;
-}) {
+function SecondaryButton({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 rounded-md border border-trust-blue/30 px-6 py-3 font-sans text-sm font-medium text-platinum transition-colors hover:border-trust-blue/60 hover:bg-trust-blue/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-gold"
+      className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 font-sans text-sm font-medium text-ink transition-colors hover:border-ink/35 hover:bg-panel"
     >
       {children}
     </Link>
@@ -82,10 +84,10 @@ function NumberedStep({
 }) {
   return (
     <div className="flex gap-5">
-      <span className="font-mono text-2xl font-light text-signal-gold/70">{number}</span>
+      <span className="font-mono text-2xl font-light text-gold-ink">{number}</span>
       <div>
-        <h3 className="font-display text-xl text-platinum">{title}</h3>
-        <p className="mt-2 text-slate leading-relaxed">{children}</p>
+        <h3 className="font-display text-xl font-medium text-ink">{title}</h3>
+        <p className="mt-2 leading-relaxed text-slate">{children}</p>
       </div>
     </div>
   );
@@ -93,10 +95,18 @@ function NumberedStep({
 
 function StatusTag({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-block font-mono text-[10px] uppercase tracking-[0.2em] text-signal-gold border border-signal-gold/30 rounded px-2 py-1">
+    <span className="inline-block rounded-full border border-gold-ink/30 bg-gold/8 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-gold-ink">
       {children}
     </span>
   );
 }
 
-export { Section, Eyebrow, GlassCard, PrimaryButton, SecondaryButton, NumberedStep, StatusTag };
+export {
+  Section,
+  Eyebrow,
+  SurfaceCard,
+  PrimaryButton,
+  SecondaryButton,
+  NumberedStep,
+  StatusTag,
+};
