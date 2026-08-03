@@ -87,7 +87,7 @@ export default function Home() {
           {CERTIFICATIONS_AND_STACK.map((item) => (
             <span
               key={item}
-              className="font-mono text-xs uppercase tracking-wider text-slate/80"
+              className="font-mono text-xs uppercase tracking-wider text-slate"
             >
               {item}
             </span>

@@ -59,7 +59,7 @@ function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-platinum/5 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-trust-blue/50">
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-slate">
             SESSION: CLOSED — LOG {year} — ACCESS: GRANTED
           </p>
           <p className="text-xs text-slate">

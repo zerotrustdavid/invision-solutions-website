@@ -37,22 +37,22 @@ export default function CaseStudiesPage() {
 
                 <div className="mt-6 space-y-4 text-sm leading-relaxed text-slate">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue-text">
                       Situation
                     </p>
                     <p className="mt-1">{study.situation}</p>
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue-text">
                       Action
                     </p>
                     <p className="mt-1">{study.action}</p>
                   </div>
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-trust-blue-text">
                       Outcome
                     </p>
-                    <p className="mt-1 italic text-slate/80">{study.outcome}</p>
+                    <p className="mt-1 italic text-slate">{study.outcome}</p>
                   </div>
                 </div>
               </GlassCard>

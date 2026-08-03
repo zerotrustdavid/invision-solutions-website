@@ -7,6 +7,11 @@
   --color-slate: #8b8f98;
   --color-signal-gold: #c9a227;
   --color-trust-blue: #3e6fe0;
+  /* Lighter tint of trust-blue for small text on dark backgrounds —
+     trust-blue itself is ~4.2:1 on void, just under WCAG AA (4.5:1)
+     at body-text sizes. Used for text only; borders/rules/decorative
+     motif elements keep the exact spec'd trust-blue. */
+  --color-trust-blue-text: #6690ea;
 }
 
 @theme inline {
@@ -16,6 +21,7 @@
   --color-slate: var(--color-slate);
   --color-signal-gold: var(--color-signal-gold);
   --color-trust-blue: var(--color-trust-blue);
+  --color-trust-blue-text: var(--color-trust-blue-text);
 
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-ibm-plex-sans);

@@ -29,7 +29,7 @@ export default function ContactPage() {
             Prefer email? Reach out directly at{" "}
             <a
               href="mailto:david@invisionsolutions.co.uk"
-              className="text-trust-blue hover:text-signal-gold"
+              className="text-trust-blue-text underline decoration-trust-blue-text/40 underline-offset-4 hover:text-signal-gold hover:decoration-signal-gold/40"
             >
               david@invisionsolutions.co.uk
             </a>
