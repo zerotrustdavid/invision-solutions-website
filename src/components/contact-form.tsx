@@ -19,11 +19,22 @@ function ContactForm() {
     setStatus("submitting");
 
     const form = event.currentTarget;
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+    // NEXT_PUBLIC_ vars are inlined at build time, so an unset variable in the
+    // deploy environment produces a silent, indistinguishable failure at runtime.
+    // Name it explicitly rather than letting it look like a network problem.
+    if (!accessKey) {
+      console.error(
+        "[contact form] NEXT_PUBLIC_WEB3FORMS_KEY is not set. It must exist in " +
+          "the environment at BUILD time — setting it after a build requires a redeploy.",
+      );
+      setStatus("error");
+      return;
+    }
+
     const formData = new FormData(form);
-    formData.append(
-      "access_key",
-      process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "",
-    );
+    formData.append("access_key", accessKey);
     formData.append("subject", "New enquiry — Invision Solutions website");
     formData.append("from_name", "Invision Solutions Website");
 
@@ -38,9 +49,11 @@ function ContactForm() {
         setStatus("success");
         form.reset();
       } else {
+        console.error("[contact form] Web3Forms rejected the submission:", result.message);
         setStatus("error");
       }
-    } catch {
+    } catch (error) {
+      console.error("[contact form] Request to Web3Forms failed:", error);
       setStatus("error");
     }
   }
