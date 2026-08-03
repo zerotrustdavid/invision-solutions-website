@@ -87,8 +87,13 @@ export default function TestimonialsPage() {
         </Reveal>
       </Section>
 
-      <Section className="!pt-0">
-        {TESTIMONIALS.length > 0 ? (
+      {/*
+        The quote grid is skipped entirely while TESTIMONIALS is empty — no
+        placeholder, no "none yet" notice. Adding entries to the array brings
+        this section back automatically.
+      */}
+      {TESTIMONIALS.length > 0 && (
+        <Section className="!pt-0">
           <div className="grid gap-6 lg:grid-cols-2">
             {TESTIMONIALS.map((t, i) => (
               <Reveal key={t.name} delay={i * 0.07}>
@@ -106,25 +111,8 @@ export default function TestimonialsPage() {
               </Reveal>
             ))}
           </div>
-        ) : (
-          <Reveal>
-            <SurfaceCard className="text-center">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold-ink">
-                Awaiting first published testimonial
-              </p>
-              <p className="mx-auto mt-4 max-w-xl leading-relaxed text-slate">
-                Nothing is published here yet. Rather than fill the space with
-                invented quotes, it stays empty until a real client has written
-                one and approved it for publication.
-              </p>
-              <p className="mx-auto mt-4 max-w-xl leading-relaxed text-slate">
-                If you&apos;ve worked with me, the form below reaches David
-                directly.
-              </p>
-            </SurfaceCard>
-          </Reveal>
-        )}
-      </Section>
+        </Section>
+      )}
 
       <Section tone="panel" className="border-t border-line">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:items-start">
