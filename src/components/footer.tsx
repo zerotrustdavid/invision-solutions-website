@@ -52,6 +52,12 @@ function Footer() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/payreckon"
+              className="text-sm text-slate transition-colors hover:text-ink"
+            >
+              PayReckon
+            </Link>
           </nav>
 
           <nav className="flex flex-col gap-3">

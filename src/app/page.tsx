@@ -8,10 +8,12 @@ import {
   SurfaceCard,
   PrimaryButton,
   SecondaryButton,
+  ExternalPrimaryButton,
   NumberedStep,
   StatusTag,
 } from "@/components/ui";
 import { SERVICES, CASE_STUDIES, CERTIFICATIONS_AND_STACK } from "@/lib/content";
+import { PAYRECKON_CALCULATORS, PAYRECKON_URL } from "@/lib/payreckon";
 
 const PILLARS = [
   {
@@ -204,6 +206,56 @@ export default function Home() {
             View all case studies
             <ArrowRight size={16} />
           </SecondaryButton>
+        </div>
+      </Section>
+
+      {/* PayReckon — sits before the closing CTA so it reads as a further
+          proof point rather than competing with the contact call to action. */}
+      <Section tone="panel" className="border-t border-line">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+          <Reveal>
+            <Eyebrow>Also built here</Eyebrow>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              PayReckon.
+            </h2>
+            <p className="mt-6 max-w-xl leading-relaxed text-slate">
+              A live product I designed, built, and run. It compares UK
+              take-home pay across umbrella, limited company, and PAYE
+              employment behind one shared tax engine — so the comparison is
+              genuinely like for like, rather than three separate tools
+              disagreeing with each other.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ExternalPrimaryButton href={PAYRECKON_URL}>
+                Open PayReckon
+              </ExternalPrimaryButton>
+              <SecondaryButton href="/payreckon">
+                How it was built
+                <ArrowRight size={16} />
+              </SecondaryButton>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <SurfaceCard raised>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate">
+                Compares
+              </p>
+              <ul className="mt-4 space-y-3">
+                {PAYRECKON_CALCULATORS.map((calc) => (
+                  <li key={calc.name} className="flex flex-wrap items-baseline gap-x-3">
+                    <span className="font-display font-medium text-ink">
+                      {calc.name}
+                    </span>
+                    <span className="text-sm text-slate">{calc.route}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 border-t border-line pt-4 text-xs leading-relaxed text-slate">
+                Estimates for planning purposes, not financial advice.
+              </p>
+            </SurfaceCard>
+          </Reveal>
         </div>
       </Section>
 

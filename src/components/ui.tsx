@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 
 function Section({
@@ -73,6 +74,55 @@ function SecondaryButton({ href, children }: { href: string; children: ReactNode
   );
 }
 
+/**
+ * Buttons for links that leave the site. Kept separate from the internal
+ * variants so `target`/`rel` and the outbound affordance can never be
+ * forgotten at a call site — `rel="noopener"` in particular is a security
+ * requirement, not a stylistic one, since without it the opened page gets a
+ * handle on this one via `window.opener`.
+ */
+function ExternalPrimaryButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-sans text-sm font-medium text-paper transition-opacity hover:opacity-88"
+    >
+      {children}
+      <ArrowUpRight size={16} aria-hidden="true" />
+      <span className="sr-only">(opens in a new tab)</span>
+    </a>
+  );
+}
+
+function ExternalSecondaryButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 font-sans text-sm font-medium text-ink transition-colors hover:border-ink/35 hover:bg-panel"
+    >
+      {children}
+      <ArrowUpRight size={16} aria-hidden="true" />
+      <span className="sr-only">(opens in a new tab)</span>
+    </a>
+  );
+}
+
 function NumberedStep({
   number,
   title,
@@ -107,6 +157,8 @@ export {
   SurfaceCard,
   PrimaryButton,
   SecondaryButton,
+  ExternalPrimaryButton,
+  ExternalSecondaryButton,
   NumberedStep,
   StatusTag,
 };
