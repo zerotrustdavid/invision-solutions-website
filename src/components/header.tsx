@@ -25,8 +25,10 @@ function Header() {
           <span className="hidden sm:inline-flex">
             <LogoLockup size={30} />
           </span>
+          {/* Tile on mobile: the bare mark reads too quietly next to the
+              hamburger, and the solid field holds its own at this size. */}
           <span className="inline-flex sm:hidden">
-            <LogoMark size={30} />
+            <LogoMark size={32} tile />
           </span>
         </Link>
 

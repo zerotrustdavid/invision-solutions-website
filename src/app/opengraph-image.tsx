@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { LENS_PATH, IRIS, RETICLE_PATHS, BRAND_COLOURS } from "@/lib/brand";
+import { RAIL, STEM, railPath, BRAND_COLOURS } from "@/lib/brand";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -20,32 +20,16 @@ export default function OpengraphImage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <svg width={64} height={64} viewBox="0 0 40 40" fill="none">
-            <path
-              d={LENS_PATH}
-              stroke={BRAND_COLOURS.ink}
-              strokeWidth="2.2"
-              strokeLinejoin="round"
-              fill="none"
-            />
+            <path d={railPath(RAIL.topY)} fill={BRAND_COLOURS.ink} />
+            <path d={railPath(RAIL.bottomY)} fill={BRAND_COLOURS.ink} />
             <rect
-              x={IRIS.x}
-              y={IRIS.y}
-              width={IRIS.w}
-              height={IRIS.h}
-              rx={IRIS.r}
+              x={STEM.x}
+              y={STEM.y}
+              width={STEM.w}
+              height={STEM.h}
+              rx={STEM.r}
               fill={BRAND_COLOURS.gold}
             />
-            {RETICLE_PATHS.map((d) => (
-              <path
-                key={d}
-                d={d}
-                stroke={BRAND_COLOURS.gold}
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            ))}
           </svg>
           <div style={{ display: "flex", fontSize: 42, fontWeight: 600 }}>
             <span style={{ color: BRAND_COLOURS.ink }}>In</span>

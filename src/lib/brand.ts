@@ -1,10 +1,18 @@
 /**
  * Invision Solutions brand geometry.
  *
- * The mark is a lens: two mirrored arcs forming an eye, with a vertical bar at
- * its centre. It reads as "in-vision" — seeing clearly — and as the letter I of
- * Invision, the bar doubling as an iris. The four corner ticks are a scan
- * reticle, carrying the Zero Trust "verify, don't assume" idea into the mark.
+ * The mark is a direct line through the layers. Two ink rails sit where the
+ * intermediaries in a conventional consultancy would be — the account manager,
+ * the junior, the chain of approvals — and a single gold stem passes straight
+ * through both without stopping at either. The rails are interrupted where it
+ * passes, so the stem is visibly unbroken.
+ *
+ * The silhouette is a capital I, which carries two meanings at once: Invision,
+ * and the first person singular the whole brand is written in. "I", not "we".
+ *
+ * Deliberately not an eye, shield, padlock, or scan reticle. Current design
+ * guidance has the market oversaturated with those, and the previous mark used
+ * two of them.
  *
  * These constants are mirrored in scripts/generate-brand-assets.mjs, which
  * produces the downloadable files in public/brand/. Change both together.
@@ -19,17 +27,48 @@ export const BRAND_COLOURS = {
   slate: "#5C6068",
 } as const;
 
-/** Lens outline — two mirrored arcs meeting at left and right points. */
-export const LENS_PATH =
-  "M4 20C4 20 10.5 9 20 9C29.5 9 36 20 36 20C36 20 29.5 31 20 31C10.5 31 4 20 4 20Z";
+/** Horizontal extent of the rails, and the gap the stem passes through. */
+export const RAIL = {
+  left: 3,
+  right: 37,
+  gapLeft: 16.1,
+  gapRight: 23.9,
+  thickness: 4.4,
+  topY: 6,
+  bottomY: 29.6,
+} as const;
 
-/** The iris / letter-I bar at the centre of the lens. */
-export const IRIS = { x: 18.4, y: 13.6, w: 3.2, h: 12.8, r: 1.6 } as const;
+/**
+ * A rail, split either side of the stem. Drawn as one path with two subpaths
+ * so the interruption is part of the geometry rather than something layered
+ * on top — it stays correct when the mark is recoloured or scaled.
+ */
+export function railPath(y: number, thickness = RAIL.thickness): string {
+  return (
+    `M${RAIL.left} ${y} H${RAIL.gapLeft} V${y + thickness} H${RAIL.left} Z ` +
+    `M${RAIL.gapRight} ${y} H${RAIL.right} V${y + thickness} H${RAIL.gapRight} Z`
+  );
+}
 
-/** Corner reticle ticks — the verification motif. */
-export const RETICLE_PATHS = [
-  "M2 7V2H7",
-  "M33 2H38V7",
-  "M38 33V38H33",
-  "M7 38H2V33",
-] as const;
+/** The gold stem. Overshoots both rails so it reads as passing through them. */
+export const STEM = { x: 16.1, y: 2, w: 7.8, h: 36, r: 1.4 } as const;
+
+/** Tile-inset variant — tighter, so the glyph clears a rounded tile's corners. */
+export const TILE_GLYPH = {
+  railLeft: 7,
+  railRight: 33,
+  gapLeft: 17.1,
+  gapRight: 22.9,
+  thickness: 3.8,
+  topY: 11.5,
+  bottomY: 24.7,
+  stem: { x: 17.1, y: 8, w: 5.8, h: 24, r: 1.2 },
+} as const;
+
+export function tileRailPath(y: number): string {
+  const t = TILE_GLYPH;
+  return (
+    `M${t.railLeft} ${y} H${t.gapLeft} V${y + t.thickness} H${t.railLeft} Z ` +
+    `M${t.gapRight} ${y} H${t.railRight} V${y + t.thickness} H${t.gapRight} Z`
+  );
+}
