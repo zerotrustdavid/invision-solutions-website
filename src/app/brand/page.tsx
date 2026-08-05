@@ -33,13 +33,13 @@ const FULL_LOGO: Asset[] = [
 
 const ICON: Asset[] = [
   { file: "invision-icon.svg", title: "SVG — transparent", note: "Vector · works on light backgrounds" },
-  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · light lens stroke", dark: true },
+  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · light rails, gold stem", dark: true },
   { file: "invision-icon-square.svg", title: "SVG — rounded tile", note: "For platforms that apply their own mask" },
   { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Transparent corners" },
   { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Transparent corners" },
   { file: "invision-icon-512.png", title: "PNG — 512px", note: "App icon size" },
   { file: "invision-icon-256.png", title: "PNG — 256px", note: "Small icon size" },
-  { file: "invision-favicon.svg", title: "SVG — favicon", note: "Simplified: no reticle, legible at 16px" },
+  { file: "invision-favicon.svg", title: "SVG — favicon", note: "Ink tile · legible at 16px" },
 ];
 
 const WORDMARK: Asset[] = [
@@ -116,10 +116,12 @@ export default function BrandPage() {
             displays.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
-            The mark is a lens: an eye whose iris is the letter I of Invision,
-            framed by a scan reticle. It carries both halves of the name —
-            in&nbsp;+&nbsp;vision — and the Zero Trust idea of verifying rather
-            than assuming.
+            The mark is a direct line through the layers. Two rails sit where
+            the intermediaries would be in a conventional consultancy — the
+            account manager, the junior, the chain of approvals — and a single
+            gold stem passes straight through both without stopping at either.
+            The silhouette is a capital&nbsp;I: Invision, and the first person
+            singular this whole brand is written in.
           </p>
         </Reveal>
       </Section>

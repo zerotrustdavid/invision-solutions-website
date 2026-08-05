@@ -1,37 +1,48 @@
-import { LENS_PATH, IRIS, RETICLE_PATHS } from "@/lib/brand";
+import { RAIL, STEM, TILE_GLYPH, railPath, tileRailPath } from "@/lib/brand";
 
 type Tone = "light" | "dark";
 
+/**
+ * Bare mark — rails in the foreground colour, stem always gold. The stem is
+ * the constant: it is the thing that reads as Invision at a glance.
+ */
 function MarkArtwork({ tone }: { tone: Tone }) {
-  const stroke = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
+  const rails = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
   return (
     <>
-      <path
-        d={LENS_PATH}
-        stroke={stroke}
-        strokeWidth="2.2"
-        strokeLinejoin="round"
-        fill="none"
-      />
+      <path d={railPath(RAIL.topY)} fill={rails} />
+      <path d={railPath(RAIL.bottomY)} fill={rails} />
       <rect
-        x={IRIS.x}
-        y={IRIS.y}
-        width={IRIS.w}
-        height={IRIS.h}
-        rx={IRIS.r}
+        x={STEM.x}
+        y={STEM.y}
+        width={STEM.w}
+        height={STEM.h}
+        rx={STEM.r}
         fill="var(--color-gold)"
       />
-      {RETICLE_PATHS.map((d) => (
-        <path
-          key={d}
-          d={d}
-          stroke="var(--color-gold)"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-      ))}
+    </>
+  );
+}
+
+/** Tile variant — a solid field so the mark stays assertive on any backdrop. */
+function TileArtwork({ tone }: { tone: Tone }) {
+  const field = tone === "dark" ? "var(--color-ink)" : "var(--color-gold)";
+  const rails = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
+  const stem = tone === "dark" ? "var(--color-gold)" : "var(--color-ink)";
+  const g = TILE_GLYPH;
+  return (
+    <>
+      <rect width="40" height="40" rx="9" fill={field} />
+      <path d={tileRailPath(g.topY)} fill={rails} />
+      <path d={tileRailPath(g.bottomY)} fill={rails} />
+      <rect
+        x={g.stem.x}
+        y={g.stem.y}
+        width={g.stem.w}
+        height={g.stem.h}
+        rx={g.stem.r}
+        fill={stem}
+      />
     </>
   );
 }
@@ -54,29 +65,14 @@ function LogoMark({
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {tile ? (
-        <>
-          <rect
-            width="40"
-            height="40"
-            rx="9"
-            fill={tone === "dark" ? "var(--color-ink)" : "var(--color-panel)"}
-          />
-          {/* Inset so the reticle ticks clear the tile's rounded corners. */}
-          <g transform="translate(5 5) scale(0.75)">
-            <MarkArtwork tone={tone} />
-          </g>
-        </>
-      ) : (
-        <MarkArtwork tone={tone} />
-      )}
+      {tile ? <TileArtwork tone={tone} /> : <MarkArtwork tone={tone} />}
     </svg>
   );
 }
 
 /**
  * Full lockup. The wordmark splits as In | vision — the two-tone treatment is
- * the point of the name, not decoration.
+ * the point of the name, not decoration, and it echoes the mark's gold stem.
  */
 function LogoLockup({
   size = 32,

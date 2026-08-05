@@ -25,14 +25,29 @@ const GOLD = "#C9A227";
 const GOLD_INK = "#7E6212";
 const INK = "#16181D";
 const PAPER = "#FFFFFF";
-const PANEL = "#F6F5F1";
 const SLATE = "#5C6068";
 
 // Geometry — keep in sync with src/lib/brand.ts
-const LENS =
-  "M4 20C4 20 10.5 9 20 9C29.5 9 36 20 36 20C36 20 29.5 31 20 31C10.5 31 4 20 4 20Z";
-const IRIS = { x: 18.4, y: 13.6, w: 3.2, h: 12.8, r: 1.6 };
-const RETICLE = ["M2 7V2H7", "M33 2H38V7", "M38 33V38H33", "M7 38H2V33"];
+const RAIL = {
+  left: 3, right: 37, gapLeft: 16.1, gapRight: 23.9,
+  thickness: 4.4, topY: 6, bottomY: 29.6,
+};
+const STEM = { x: 16.1, y: 2, w: 7.8, h: 36, r: 1.4 };
+const TILE_GLYPH = {
+  railLeft: 7, railRight: 33, gapLeft: 17.1, gapRight: 22.9,
+  thickness: 3.8, topY: 11.5, bottomY: 24.7,
+  stem: { x: 17.1, y: 8, w: 5.8, h: 24, r: 1.2 },
+};
+
+const railPath = (y, t = RAIL.thickness) =>
+  `M${RAIL.left} ${y} H${RAIL.gapLeft} V${y + t} H${RAIL.left} Z ` +
+  `M${RAIL.gapRight} ${y} H${RAIL.right} V${y + t} H${RAIL.gapRight} Z`;
+
+const tileRailPath = (y) => {
+  const t = TILE_GLYPH;
+  return `M${t.railLeft} ${y} H${t.gapLeft} V${y + t.thickness} H${t.railLeft} Z ` +
+    `M${t.gapRight} ${y} H${t.railRight} V${y + t.thickness} H${t.gapRight} Z`;
+};
 
 /** Find a Next-downloaded webfont by the CSS module that declares it. */
 function findWoff2(cssNeedle) {
@@ -92,39 +107,37 @@ function outline(font, text, fontSize, { letterSpacing = 0 } = {}) {
 }
 
 function markInner({ tone }) {
-  const stroke = tone === "dark" ? PAPER : INK;
-  return `  <path d="${LENS}" stroke="${stroke}" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-  <rect x="${IRIS.x}" y="${IRIS.y}" width="${IRIS.w}" height="${IRIS.h}" rx="${IRIS.r}" fill="${GOLD}"/>
-${RETICLE.map(
-  (d) =>
-    `  <path d="${d}" stroke="${GOLD}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
-).join("\n")}`;
+  const rails = tone === "dark" ? PAPER : INK;
+  return `  <path d="${railPath(RAIL.topY)}" fill="${rails}"/>
+  <path d="${railPath(RAIL.bottomY)}" fill="${rails}"/>
+  <rect x="${STEM.x}" y="${STEM.y}" width="${STEM.w}" height="${STEM.h}" rx="${STEM.r}" fill="${GOLD}"/>`;
+}
+
+function tileInner({ tone }) {
+  const g = TILE_GLYPH;
+  const field = tone === "dark" ? INK : GOLD;
+  const rails = tone === "dark" ? PAPER : INK;
+  const stem = tone === "dark" ? GOLD : INK;
+  return `  <rect width="40" height="40" rx="9" fill="${field}"/>
+  <path d="${tileRailPath(g.topY)}" fill="${rails}"/>
+  <path d="${tileRailPath(g.bottomY)}" fill="${rails}"/>
+  <rect x="${g.stem.x}" y="${g.stem.y}" width="${g.stem.w}" height="${g.stem.h}" rx="${g.stem.r}" fill="${stem}"/>`;
 }
 
 function iconSvg({ tone = "light", tile = false }) {
-  const tileFill = tone === "dark" ? INK : PANEL;
-  if (!tile) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-${markInner({ tone })}
-</svg>`;
-  }
-  // Inset the artwork so the reticle ticks clear the tile's rounded corners.
+  const inner = tile ? tileInner({ tone }) : markInner({ tone });
   return `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-  <rect width="40" height="40" rx="9" fill="${tileFill}"/>
-  <g transform="translate(5 5) scale(0.75)">
-${markInner({ tone })}
-  </g>
+${inner}
 </svg>`;
 }
 
-/** Simplified mark for tiny sizes: lens + iris only, no reticle. */
-function faviconSvg({ tone = "light" }) {
-  const stroke = tone === "dark" ? PAPER : INK;
+/**
+ * Favicon. Always the ink tile — a transparent glyph vanishes against a dark
+ * tab strip, and the gold stem needs a dark field to carry at 16px.
+ */
+function faviconSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-  <g transform="translate(20 20) scale(1.16) translate(-20 -20)">
-    <path d="${LENS}" stroke="${stroke}" stroke-width="2.6" stroke-linejoin="round" fill="none"/>
-    <rect x="${IRIS.x}" y="${IRIS.y}" width="${IRIS.w}" height="${IRIS.h}" rx="${IRIS.r}" fill="${GOLD}"/>
-  </g>
+${tileInner({ tone: "dark" })}
 </svg>`;
 }
 
@@ -191,7 +204,7 @@ const main = async () => {
   write("invision-icon-dark.svg", iconDark);
   write("invision-icon-square.svg", iconSquare);
   write("invision-icon-square-dark.svg", iconSquareDark);
-  write("invision-favicon.svg", faviconSvg({ tone: "light" }));
+  write("invision-favicon.svg", faviconSvg());
   for (const s of [2048, 1024, 512, 256]) {
     await png(iconLight, `invision-icon-${s}.png`, s, s);
     written.push(`invision-icon-${s}.png`);
