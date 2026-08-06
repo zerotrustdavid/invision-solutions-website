@@ -1,6 +1,6 @@
-# Invision Solutions — Website
+# Invision Solutions Website
 
-Marketing site for Invision Solutions Ltd, a founder-led cybersecurity, DevSecOps, and cloud consultancy. Built with Next.js (App Router), TypeScript, and Tailwind CSS.
+Marketing site for Invision Solutions Ltd, a founder-led cybersecurity, DevSecOps, and cloud consultancy. Built with Next.js (App Router), TypeScript, and Tailwind CSS, deployed on Vercel at invisionsolutions.co.uk.
 
 ## Getting started
 
@@ -11,6 +11,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run brand` | Regenerate the downloadable brand assets (run `build` first) |
+
 ## Environment variables
 
 Copy `.env.example` to `.env.local` and fill in the Web3Forms access key:
@@ -19,11 +27,11 @@ Copy `.env.example` to `.env.local` and fill in the Web3Forms access key:
 cp .env.example .env.local
 ```
 
-Without a key set, the form will submit but Web3Forms rejects the request server-side.
+Without a key set, the form submits but Web3Forms rejects the request server-side.
 
 ### Getting the access key
 
-Web3Forms is account-based. Sign up at [web3forms.com](https://web3forms.com); a form and an access key are created for you immediately, shown in the dashboard under **Form Setup**. The key is public by design — it is safe in client-side code, which is why it uses the `NEXT_PUBLIC_` prefix.
+Web3Forms is account-based. Sign up at [web3forms.com](https://web3forms.com); a form and an access key are created immediately, shown in the dashboard under **Form Setup**. The key is public by design, so it is safe in client-side code, which is why it uses the `NEXT_PUBLIC_` prefix.
 
 ### Pointing submissions at the right inbox
 
@@ -40,60 +48,53 @@ An address must be verified under Linked Emails before it can be selected as a r
 
 The account is on Web3Forms Pro (10,000 submissions/month).
 
-Access keys are public by design and ship in the client bundle — they can only
-ever deliver to the verified recipients on the account, so exposure is not the
-risk. Unrestricted reuse of a key on another site is, which Pro's **Settings →
-Security Settings → Restrict to Domains** prevents. Keep it set to
-`invisionsolutions.co.uk, www.invisionsolutions.co.uk` on every form.
+Access keys are public by design and ship in the client bundle. They can only ever deliver to the verified recipients on the account, so exposure is not the risk. Unrestricted reuse of a key on another site is, which Pro's **Settings → Security Settings → Restrict to Domains** prevents. Keep it set to `invisionsolutions.co.uk, www.invisionsolutions.co.uk` on every form.
 
-Domain restriction also blocks Vercel preview deployments (`*.vercel.app`); add
-that host temporarily if a preview needs to submit.
+Domain restriction also blocks Vercel preview deployments (`*.vercel.app`); add that host temporarily if a preview needs to submit.
 
-If a key is ever abused, rotate it in the dashboard and update the matching
-Vercel environment variable.
+If a key is ever abused, rotate it in the dashboard and update the matching Vercel environment variable.
+
+**Whitespace warning.** `NEXT_PUBLIC_` values are inlined at build time, and a stray tab or space pasted into the Vercel field travels with the key into the bundle. Web3Forms then rejects every submission with no useful error. `src/components/web3forms.tsx` trims the key defensively and logs an explicit console error when it is missing, but the value in Vercel should still be clean.
 
 ### Routing enquiries to different mailboxes
 
-`/enquiries` sends each department's form to its own mailbox. Web3Forms binds
-one access key to one form, and recipients are configured per form in the
-dashboard — there is no client-side recipient override. So each mailbox needs
-its own Web3Forms form:
+`/enquiries` sends each department's form to its own mailbox. Web3Forms binds one access key to one form, and recipients are configured per form in the dashboard, so there is no client-side recipient override. Each mailbox therefore needs its own Web3Forms form:
 
-1. Create a form in Web3Forms per mailbox (Sales, Support, Billing, Invoices,
-   Contracts, Partnerships, General).
+1. Create a form in Web3Forms per mailbox. The current set is defined in `src/lib/mailboxes.ts`: sales, contact, support, billing, invoice, admin, hello.
 2. Set that form's recipient to the matching verified address.
-3. Copy its access key into the matching `NEXT_PUBLIC_WEB3FORMS_KEY_*` variable
-   in Vercel — see `.env.example` for the full list.
+3. Copy its access key into the matching `NEXT_PUBLIC_WEB3FORMS_KEY_*` variable in Vercel. See `.env.example` for the full list.
 4. Redeploy, because `NEXT_PUBLIC_` values are inlined at build time.
 
-Any variable left unset falls back to `NEXT_PUBLIC_WEB3FORMS_KEY`, which
-delivers to `info@`. The page therefore works before those forms exist and gets
-more precise as each key is added — nothing is silently dropped. Each
-submission carries a distinct subject line, so mail rules can separate them even
-while everything shares one key.
+Any variable left unset falls back to `NEXT_PUBLIC_WEB3FORMS_KEY`. The page therefore works before those forms exist and gets more precise as each key is added, and nothing is silently dropped. Each submission carries a distinct subject line, so mail rules can separate them even while everything shares one key.
 
 ### Testing submissions
 
-The forms submit client-side from the browser, which is the path the site
-actually uses — test them on the deployed site.
+The forms submit client-side from the browser, which is the path the site actually uses, so test them on the deployed site.
 
-Server-side calls to the API (curl, scripts, CI) are rejected with *"This method
-is not allowed... Pro plan is required"* unless the calling IP is whitelisted by
-Web3Forms support. That restriction applies only to non-browser callers and
-never affects the website forms.
+Server-side calls to the API (curl, scripts, CI) are rejected with *"This method is not allowed... Pro plan is required"* unless the calling IP is whitelisted by Web3Forms support. That restriction applies only to non-browser callers and never affects the website forms.
 
-## Brand assets
+## Brand
 
-The downloadable logo files in `public/brand/` are generated:
+The mark is a cloud drawn as one continuous line: the stroke traces the silhouette in gold, runs back along the base, then turns inward in deep gold and stops.
+
+There is **one version and no variants**. No dark colourway, no inverted form, and no heavier stand-in at small sizes. The tile, favicon and app icon all carry the same artwork on a white field. On anything other than white or near-white, use the white tile rather than recolouring the mark.
+
+Geometry and colour roles live in `src/lib/brand.ts` and are mirrored in `scripts/generate-brand-assets.mjs`. Change both together.
+
+### Regenerating the downloadable files
 
 ```bash
-npm run build   # must run first — the generator reads Next's webfont files
+npm run build   # must run first; the generator reads Next's webfont files
 npm run brand
 ```
 
-`scripts/generate-brand-assets.mjs` converts the wordmark type to outlines so
-the SVGs render correctly without Space Grotesk installed. Mark geometry lives
-in `src/lib/brand.ts` and is mirrored in the generator — change both together.
+This writes 15 files to `public/brand/`, surfaced on `/brand`. Wordmark type is converted to outlines so the SVGs render correctly without Space Grotesk installed.
+
+### Two things worth knowing before editing the lockup
+
+**The descriptor is width-matched.** "SOLUTIONS" is tracked so it spans exactly the width of "INVISION" above it. Size is the lever, not tracking: at 25% of the wordmark it would need 1.28em of tracking to reach that width, which scatters the letters, so it sits at 45% and needs 0.4615em. The generator re-solves the value from real font metrics rather than reading the constant, so the two cannot drift apart. Both figures are recorded in `WORDMARK` in `src/lib/brand.ts`.
+
+**`src/app/_fonts/` exists for the Open Graph image.** `next/font` ships Space Grotesk as a single variable file covering all three weights, and Satori does not apply variable axes, so `ImageResponse` silently falls back to a generic sans. Those three static font instances are loaded explicitly in `src/app/opengraph-image.tsx` to stop that happening. Do not delete them.
 
 ## Deployment (Vercel)
 
@@ -106,19 +107,29 @@ vercel --prod
 
 In the Vercel dashboard:
 
-1. Project Settings → Environment Variables → add `NEXT_PUBLIC_WEB3FORMS_KEY` (Production + Preview).
+1. Project Settings → Environment Variables → add `NEXT_PUBLIC_WEB3FORMS_KEY` and the per-mailbox keys (Production + Preview).
 2. Project Settings → Domains → add `invisionsolutions.co.uk` and `www.invisionsolutions.co.uk`.
-3. Copy the DNS records Vercel shows (A record for the apex, CNAME for `www`) into GoDaddy's DNS management for the domain — copy them live from the dashboard rather than reusing IPs from documentation, since Vercel's anycast addresses have changed before.
+3. Copy the DNS records Vercel shows (A record for the apex, CNAME for `www`) into GoDaddy's DNS management for the domain. Copy them live from the dashboard rather than reusing IPs from documentation, since Vercel's anycast addresses have changed before.
 4. Wait for propagation and confirm Vercel shows "Valid Configuration" for both domains.
+
+The apex 308-redirects to `www`, so canonical URLs and Open Graph tags point at `www`. That is set by `SITE_URL` in `src/lib/metadata.ts`.
 
 ## Project structure
 
-- `src/app/*` — one folder per route (`/`, `/services`, `/approach`, `/case-studies`, `/contact`).
-- `src/components/*` — shared UI (header, footer, logo, glass-panel primitives, verification-ledger motif, scroll-reveal wrapper, contact form).
-- `src/lib/content.ts` — services and case study copy, shared between the Home teaser sections and the full pages.
-- `src/app/globals.css` — design tokens (colour, font, focus states) as CSS custom properties, mapped into Tailwind's `@theme`.
+Routes, one folder per page under `src/app/`:
 
-## Known open items
+`/` · `/services` · `/approach` · `/case-studies` · `/testimonials` · `/enquiries` · `/contact` · `/brand` · `/payreckon`
 
-- **Case Studies page** ships with `[METRIC]` placeholders — needs real, anonymised figures and David's sign-off before this page goes live.
-- **Contact form** needs a real Web3Forms access key (see above) before a live submission will actually deliver to `info@invisionsolutions.co.uk`.
+- `src/app/icon.tsx`, `src/app/opengraph-image.tsx`: favicon and social card, generated at build time
+- `src/app/globals.css`: design tokens (colour, font, focus states) as CSS custom properties, mapped into Tailwind's `@theme`
+- `src/components/*`: header, footer, logo, surface primitives, verification-ledger motif, scroll-reveal wrapper, social icons, Web3Forms form
+- `src/lib/brand.ts`: mark geometry, colour roles, wordmark metrics
+- `src/lib/content.ts`: services and case study copy, shared between the Home teasers and the full pages
+- `src/lib/mailboxes.ts`: the department mailboxes behind `/enquiries`
+- `src/lib/metadata.ts`: canonical URL and per-page metadata helper
+- `src/lib/payreckon.ts`: PayReckon product copy, with sourcing rules in the file header
+
+## Open items
+
+- **Case study figures** are realistic but need checking against the real engagements before this page is treated as final.
+- **Trademark clearance** has not been done. A UK IPO search in classes 9 and 42 is worth running before registering the mark.

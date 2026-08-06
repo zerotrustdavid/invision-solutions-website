@@ -12,11 +12,10 @@
  * semicircles and both top arcs are chords well inside their radii, so the
  * curve stays tangent-continuous the whole way round.
  *
- * The system also carries a solid form. Rendering both at 1x and comparing
- * showed the monoline survives further down than expected — clean to 20px and
- * still readable at 16 — so the solid form is reserved for the tiles, where
- * the mark occupies only two thirds of an already-small square. See
- * SOLID_BELOW_PX.
+ * A closed, solid form is still exported for anyone who needs a filled
+ * silhouette, but nothing switches to it automatically. The line is the logo at
+ * every size, and the tiles put it on a white field rather than substituting a
+ * heavier shape. See MARK_COLOURS.
  *
  * These constants are mirrored in scripts/generate-brand-assets.mjs, which
  * produces the downloadable files in public/brand/. Change both together.
