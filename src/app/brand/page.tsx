@@ -164,8 +164,8 @@ export default function BrandPage() {
             Wordmark
           </h2>
           <p className="mt-2 text-sm text-slate">
-            Type only, for places that already carry the icon — letterheads,
-            invoice footers, email signatures.
+            The full name set as type, for places that already carry the mark —
+            letterheads, invoice footers, email signatures.
           </p>
         </Reveal>
         <AssetGrid assets={WORDMARK} />

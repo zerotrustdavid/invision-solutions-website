@@ -27,15 +27,14 @@ function Header() {
           aria-label="Invision Solutions home"
           className="shrink-0"
         >
-          {/* The nav bar is too shallow for the stacked lockup, so it uses the
-              row orientation with the subline dropped. Mobile takes the same
-              lockup a size down — the tile is no use here now that its field is
-              white like the bar behind it, and it only shrank the mark. */}
+          {/* Row orientation, with the subline: the company name is Invision
+              Solutions, so the nav has to say so rather than just "Invision".
+              Mobile takes the same lockup a size down. */}
           <span className="hidden sm:inline-flex">
-            <LogoLockup size={22} subline={false} orientation="row" />
+            <LogoLockup size={20} orientation="row" />
           </span>
           <span className="inline-flex sm:hidden">
-            <LogoLockup size={18} subline={false} orientation="row" />
+            <LogoLockup size={17} orientation="row" />
           </span>
         </Link>
 
