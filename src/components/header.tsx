@@ -27,10 +27,10 @@ function Header() {
           aria-label="Invision Solutions home"
           className="shrink-0"
         >
-          {/* The header bar is too shallow for the stacked lockup's subline, so
-              the nav uses the wordmark alone — the mark is still in it, as the O. */}
+          {/* The nav bar is too shallow for the stacked lockup, so it uses the
+              row orientation with the subline dropped. */}
           <span className="hidden sm:inline-flex">
-            <LogoLockup size={24} subline={false} />
+            <LogoLockup size={22} subline={false} orientation="row" />
           </span>
           {/* Tile on mobile: the bare mark reads too quietly next to the
               hamburger, and the solid field holds its own at this size. */}

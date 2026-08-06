@@ -1,5 +1,12 @@
 import { ImageResponse } from "next/og";
-import { BEAM, BRAND_COLOURS, CLOUD_BOX, CLOUD_LOBES } from "@/lib/brand";
+import {
+  ASPECT,
+  BRAND_COLOURS,
+  CLOUD_ARC,
+  RETURN_ARC,
+  STROKE,
+  VIEWBOX,
+} from "@/lib/brand";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -18,48 +25,26 @@ export default function OpengraphImage() {
           padding: "84px",
         }}
       >
-        {/* Horizontal secondary lockup. The integrated wordmark needs the mark
-            sat on the text baseline, which Satori does not lay out reliably —
-            so the social card uses the detached mark instead. */}
-        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
-          <svg
-            width={(64 * CLOUD_BOX.inkWidth) / CLOUD_BOX.inkHeight}
-            height={64}
-            viewBox={`${CLOUD_BOX.inkLeft} ${CLOUD_BOX.inkTop} ${CLOUD_BOX.inkWidth} ${CLOUD_BOX.inkHeight}`}
-            fill="none"
-          >
-            <defs>
-              <clipPath id="ogcloud">
-                {CLOUD_LOBES.map(([x, y, w, h, r]) => (
-                  <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} rx={r} />
-                ))}
-              </clipPath>
-            </defs>
-            {CLOUD_LOBES.map(([x, y, w, h, r]) => (
-              <rect
-                key={`${x}-${y}`}
-                x={x}
-                y={y}
-                width={w}
-                height={h}
-                rx={r}
-                fill={BRAND_COLOURS.ink}
-              />
-            ))}
-            <g clipPath="url(#ogcloud)">
-              <path
-                d={BEAM.path}
-                stroke={BRAND_COLOURS.paper}
-                strokeWidth={BEAM.channelWidth}
-                fill="none"
-              />
-              <path
-                d={BEAM.path}
-                stroke={BRAND_COLOURS.gold}
-                strokeWidth={BEAM.width}
-                fill="none"
-              />
-            </g>
+        {/* Row lockup. The card is 630px tall and mostly headline, so the
+            stacked lockup would crowd it. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <svg width={72 * ASPECT} height={72} viewBox={VIEWBOX} fill="none">
+            <path
+              d={CLOUD_ARC}
+              stroke={BRAND_COLOURS.ink}
+              strokeWidth={STROKE}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={RETURN_ARC}
+              stroke={BRAND_COLOURS.gold}
+              strokeWidth={STROKE}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           <div
             style={{

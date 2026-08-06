@@ -1,28 +1,22 @@
 /**
  * Invision Solutions brand geometry.
  *
- * The mark is a cloud with a beam driven through it. The cloud is the platform
- * — the client's estate, running somewhere they can't point at. The beam is the
- * consultant: one line, entering at one edge and leaving at the other, without
- * stopping at anything in between. Two ideas the business is actually made of,
- * cloud and a direct line of advice through it.
+ * The mark is a cloud drawn as one continuous line. The stroke traces the
+ * silhouette, runs back along the base, then turns inward and stops — the
+ * outward pass is the platform, the return is the consultant coming back
+ * through it. One line, two tones, no second object.
  *
- * The beam is separated from the cloud by a channel cut in the *background*
- * colour rather than being drawn on top, so it reads as passing through the
- * form instead of lying across it. That is why every draw function takes the
- * background it will sit on — get it wrong and the channel disappears, or the
- * beam merges into the field behind it.
+ * The cloud is a single closed path rather than a union of overlapping shapes,
+ * because a monoline mark has to be strokeable: stroking overlapping lobes
+ * draws the seams where they meet. The left and right ends are exact
+ * semicircles and both top arcs are chords well inside their radii, so the
+ * curve stays tangent-continuous the whole way round.
  *
- * In the primary lockup the mark stands in for the O of INVISION. It is wider
- * than the glyph it replaces, deliberately: a substitution you have to hunt for
- * is not a logo. The mark also works detached, which is what the favicon,
- * app tile and social avatars use.
- *
- * The cloud is drawn, not stock. Each lobe's corner radius sits at roughly 40%
- * of its height rather than the 50% that would make it a capsule, so the
- * silhouette reads as squared tiles that happen to form a cloud. The lobe
- * rhythm is asymmetric — low left, tall centre, mid right — which is what keeps
- * it legible at 16px without collapsing into the generic three-circle puff.
+ * The system also carries a solid form. Rendering both at 1x and comparing
+ * showed the monoline survives further down than expected — clean to 20px and
+ * still readable at 16 — so the solid form is reserved for the tiles, where
+ * the mark occupies only two thirds of an already-small square. See
+ * SOLID_BELOW_PX.
  *
  * These constants are mirrored in scripts/generate-brand-assets.mjs, which
  * produces the downloadable files in public/brand/. Change both together.
@@ -37,50 +31,45 @@ export const BRAND_COLOURS = {
   slate: "#5C6068",
 } as const;
 
-/**
- * The cloud's drawing box, and the filled extent inside it. The lobes do not
- * reach the box edges, so anything that has to align the mark optically — the
- * wordmark, the tile, a tight viewBox — must use the ink extent, not the box.
- */
-export const CLOUD_BOX = {
-  width: 104,
-  height: 66,
-  inkLeft: 12,
-  inkTop: 8,
-  inkWidth: 80,
-  inkHeight: 50,
-} as const;
+/** The cloud silhouette, open — the outward pass of the line. */
+export const CLOUD_ARC =
+  "M30 70 A14 14 0 0 1 30 42 A20 20 0 0 1 68 34 A16 16 0 0 1 96 44 A13 13 0 0 1 96 70";
 
-/** viewBox cropped to the artwork, so the SVG's box is the visible mark. */
-export const CLOUD_VIEWBOX = `${CLOUD_BOX.inkLeft} ${CLOUD_BOX.inkTop} ${CLOUD_BOX.inkWidth} ${CLOUD_BOX.inkHeight}`;
+/** The same silhouette closed, for the solid small-size form. */
+export const CLOUD_CLOSED = `${CLOUD_ARC} Z`;
+
+/** The return: back along the base, then curling inward. */
+export const RETURN_ARC = "M96 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
+
+/**
+ * The return as it sits on the solid form. It starts slightly inside the
+ * silhouette's right edge so the round cap does not bulge past it.
+ */
+export const RETURN_SOLID = "M92 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
+
+export const STROKE = 5.5;
+/** Heavier on the solid form — it is read at small sizes, against a fill. */
+export const STROKE_SOLID = 7;
+
+/**
+ * Bounds of the stroked artwork, measured by rendering at 10x and trimming
+ * rather than derived by hand — the arc bulges are not obvious from the path.
+ * Used as the viewBox so an SVG's box is exactly the visible mark.
+ */
+export const ART = { x: 13.2, y: 19.9, width: 98.6, height: 52.9 } as const;
+export const VIEWBOX = `${ART.x} ${ART.y} ${ART.width} ${ART.height}`;
+export const ASPECT = ART.width / ART.height;
+
+/**
+ * Under this rendered height, use the solid form. Set from rendering both at
+ * 1x and looking, not from arithmetic on the stroke width: at 20px the line
+ * still resolves cleanly, and the solid form actually loses the inner curl
+ * into its own fill sooner than the monoline does.
+ */
+export const SOLID_BELOW_PX = 18;
+
+/** Tile proportions — corner radius, and how much of the tile the mark fills. */
+export const TILE = { radiusRatio: 0.22, fillRatio: 0.66 } as const;
 
 /** Space Grotesk cap height, as a fraction of font size. */
 export const CAP_RATIO = 0.7;
-
-/** The four lobes, as [x, y, width, height, radius]. */
-export const CLOUD_LOBES: ReadonlyArray<
-  readonly [number, number, number, number, number]
-> = [
-  [12, 32, 30, 26, 10],
-  [32, 8, 44, 50, 17],
-  [64, 24, 28, 34, 12],
-  [12, 38, 80, 20, 9],
-] as const;
-
-/** The beam's centreline, plus the weights of the beam and its channel. */
-export const BEAM = {
-  path: "M4 62 L100 4",
-  width: 10,
-  channelWidth: 19,
-} as const;
-
-/** Tile proportions — corner radius and how much of the tile the cloud fills. */
-export const TILE = { radiusRatio: 0.22, fillRatio: 0.72 } as const;
-
-/** The lobes as SVG markup. Shared by the components and the asset generator. */
-export function cloudShapes(): string {
-  return CLOUD_LOBES.map(
-    ([x, y, w, h, r]) =>
-      `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/>`,
-  ).join("");
-}

@@ -1,109 +1,91 @@
-"use client";
-
-import { useId } from "react";
 import {
-  BEAM,
-  CAP_RATIO,
-  CLOUD_BOX,
-  CLOUD_LOBES,
-  CLOUD_VIEWBOX,
+  ART,
+  ASPECT,
+  CLOUD_ARC,
+  CLOUD_CLOSED,
+  RETURN_ARC,
+  RETURN_SOLID,
+  SOLID_BELOW_PX,
+  STROKE,
+  STROKE_SOLID,
   TILE,
+  VIEWBOX,
 } from "@/lib/brand";
 
 type Tone = "light" | "dark";
 
-/** Where the mark sits. The channel around the beam is cut in this colour. */
-type Field = "paper" | "panel" | "ink" | "gold";
-
-const FIELD_VAR: Record<Field, string> = {
-  paper: "var(--color-paper)",
-  panel: "var(--color-panel-alt)",
-  ink: "var(--color-ink)",
-  gold: "var(--color-gold)",
-};
-
-function Lobes({ fill }: { fill: string }) {
+/**
+ * The mark's two forms. `mono` is the primary: one continuous line, silhouette
+ * in the foreground colour and the return in gold. `solid` is what small sizes
+ * use, because below SOLID_BELOW_PX the stroke drops under a device pixel.
+ */
+function Artwork({ solid, fg, accent }: { solid: boolean; fg: string; accent: string }) {
+  if (solid) {
+    return (
+      <>
+        <path d={CLOUD_CLOSED} fill={fg} />
+        <path
+          d={RETURN_SOLID}
+          stroke={accent}
+          strokeWidth={STROKE_SOLID}
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </>
+    );
+  }
   return (
     <>
-      {CLOUD_LOBES.map(([x, y, w, h, r]) => (
-        <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} rx={r} fill={fill} />
-      ))}
+      <path
+        d={CLOUD_ARC}
+        stroke={fg}
+        strokeWidth={STROKE}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d={RETURN_ARC}
+        stroke={accent}
+        strokeWidth={STROKE}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </>
   );
 }
 
 /**
- * Cloud plus beam. The beam is clipped to the silhouette so the cloud stays a
- * single closed form, and the channel either side of it is stroked in the
- * field colour — which is why `field` is required rather than assumed. Drawn
- * on the wrong field, the channel vanishes and the beam looks pasted on.
+ * `size` is the mark's height in pixels. Width follows from the artwork's
+ * aspect — the mark is roughly 1.86:1, not square, so never constrain it to a
+ * square box.
  */
-function CloudBeam({
-  field,
-  body,
-  accent,
-}: {
-  field: Field;
-  body: string;
-  accent: string;
-}) {
-  // Each instance needs its own clip id — a duplicated id silently resolves to
-  // whichever one the document happened to parse first.
-  const clipId = useId();
-  return (
-    <>
-      <defs>
-        <clipPath id={clipId}>
-          {CLOUD_LOBES.map(([x, y, w, h, r]) => (
-            <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} rx={r} />
-          ))}
-        </clipPath>
-      </defs>
-      <Lobes fill={body} />
-      <g clipPath={`url(#${clipId})`}>
-        <path
-          d={BEAM.path}
-          stroke={FIELD_VAR[field]}
-          strokeWidth={BEAM.channelWidth}
-          fill="none"
-        />
-        <path d={BEAM.path} stroke={accent} strokeWidth={BEAM.width} fill="none" />
-      </g>
-    </>
-  );
-}
-
-/** Colour roles for the cloud body and the beam, given tone and field. */
-function roles(tone: Tone, field: Field) {
-  if (field === "gold") {
-    // Gold beam on a gold field would disappear into its own channel.
-    return { body: "var(--color-ink)", accent: "var(--color-paper)" };
-  }
-  return tone === "dark"
-    ? { body: "var(--color-paper)", accent: "var(--color-gold)" }
-    : { body: "var(--color-ink)", accent: "var(--color-gold)" };
-}
-
 function LogoMark({
   size = 32,
   tone = "light",
   tile = false,
-  field,
+  solid,
 }: {
   size?: number;
   tone?: Tone;
   tile?: boolean;
-  field?: Field;
+  solid?: boolean;
 }) {
-  const resolved: Field = field ?? (tone === "dark" ? "ink" : "paper");
+  const useSolid = solid ?? size < SOLID_BELOW_PX;
 
   if (tile) {
-    const tileField: Field = tone === "dark" ? "ink" : "gold";
-    const { body, accent } = roles(tone, tileField);
+    // Tiles are always solid: they are used at favicon and avatar sizes, and a
+    // platform mask can crop a thin stroke away entirely.
+    const field = tone === "dark" ? "var(--color-ink)" : "var(--color-gold)";
+    const fg = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
+    // Gold-on-gold would disappear, so the accent flips to paper on gold.
+    const accent = tone === "dark" ? "var(--color-gold)" : "var(--color-paper)";
     const box = 100;
     const w = box * TILE.fillRatio;
-    const s = w / CLOUD_BOX.inkWidth;
-    const h = CLOUD_BOX.inkHeight * s;
+    const s = w / ART.width;
+    const h = ART.height * s;
     return (
       <svg
         width={size}
@@ -113,94 +95,86 @@ function LogoMark({
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <rect width={box} height={box} rx={box * TILE.radiusRatio} fill={FIELD_VAR[tileField]} />
+        <rect width={box} height={box} rx={box * TILE.radiusRatio} fill={field} />
         <g
-          transform={`translate(${(box - w) / 2 - CLOUD_BOX.inkLeft * s} ${
-            (box - h) / 2 - CLOUD_BOX.inkTop * s
+          transform={`translate(${(box - w) / 2 - ART.x * s} ${
+            (box - h) / 2 - ART.y * s
           }) scale(${s})`}
         >
-          <CloudBeam field={tileField} body={body} accent={accent} />
+          <Artwork solid fg={fg} accent={accent} />
         </g>
       </svg>
     );
   }
 
-  const { body, accent } = roles(tone, resolved);
+  const fg = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
   return (
     <svg
-      width={(size * CLOUD_BOX.inkWidth) / CLOUD_BOX.inkHeight}
+      width={size * ASPECT}
       height={size}
-      viewBox={CLOUD_VIEWBOX}
+      viewBox={VIEWBOX}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <CloudBeam field={resolved} body={body} accent={accent} />
+      <Artwork solid={useSolid} fg={fg} accent="var(--color-gold)" />
     </svg>
   );
 }
 
 /**
- * Primary lockup. The mark stands in for the O of INVISION, so the wordmark is
- * "INVISI", the mark, then "N" — set at cap height and sitting on the baseline.
- * The mark is wider than the glyph it replaces on purpose.
+ * Lockup. Stacked by default — mark over wordmark over a tracked subline,
+ * which is how the mark is meant to be seen. `orientation="row"` puts the mark
+ * beside the wordmark for shallow spaces like the nav bar.
  */
 function LogoLockup({
   size = 32,
   subline = true,
   tone = "light",
-  field,
+  orientation = "stacked",
 }: {
   size?: number;
   subline?: boolean;
   tone?: Tone;
-  field?: Field;
+  orientation?: "stacked" | "row";
 }) {
-  const resolved: Field = field ?? (tone === "dark" ? "ink" : "paper");
-  const { body, accent } = roles(tone, resolved);
-  const cap = size * CAP_RATIO;
   const letters = tone === "dark" ? "text-paper" : "text-ink";
+  const wordmark = (
+    <span
+      className={`whitespace-nowrap font-display font-bold tracking-tight ${letters}`}
+      style={{ fontSize: size }}
+    >
+      INVISION
+    </span>
+  );
+  const sub = subline && (
+    <span
+      className="whitespace-nowrap font-mono uppercase text-slate"
+      // Floored at 9px: at the sizes the footer and nav use, a straight 0.25
+      // ratio lands around 5px, which is present but unreadable.
+      style={{ letterSpacing: "0.32em", fontSize: Math.max(size * 0.25, 9) }}
+    >
+      Solutions
+    </span>
+  );
+
+  if (orientation === "row") {
+    return (
+      <span className="inline-flex items-center gap-2.5">
+        <LogoMark size={size * 1.15} tone={tone} />
+        <span className="flex flex-col leading-none">
+          {wordmark}
+          {sub}
+        </span>
+      </span>
+    );
+  }
 
   return (
     <span className="inline-flex flex-col items-center leading-none">
-      {/* whitespace-nowrap: the inline mark is a break opportunity, so in a
-          constrained flex context the word otherwise splits across lines. */}
-      <span
-        className={`whitespace-nowrap font-display font-bold tracking-tight ${letters}`}
-        style={{ fontSize: size }}
-      >
-        <span aria-hidden="true">INVISI</span>
-        <svg
-          width={(cap * CLOUD_BOX.inkWidth) / CLOUD_BOX.inkHeight}
-          height={cap}
-          viewBox={CLOUD_VIEWBOX}
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-          // display:inline-block overrides Tailwind Preflight's `svg{display:block}`,
-          // which otherwise puts the mark on its own line and splits the word
-          // across three. Baseline alignment then sits the mark's foot on the
-          // text baseline, and the viewBox is cropped to the artwork so its top
-          // lands at cap height.
-          style={{
-            display: "inline-block",
-            verticalAlign: "baseline",
-            margin: `0 ${size * 0.045}px`,
-          }}
-        >
-          <CloudBeam field={resolved} body={body} accent={accent} />
-        </svg>
-        <span aria-hidden="true">N</span>
-        <span className="sr-only">Invision</span>
-      </span>
-      {subline && (
-        <span
-          className="font-mono uppercase text-slate"
-          style={{ letterSpacing: "0.3em", fontSize: size * 0.24, marginTop: size * 0.16 }}
-        >
-          Solutions
-        </span>
-      )}
+      <LogoMark size={size * 1.5} tone={tone} />
+      <span style={{ marginTop: size * 0.34 }}>{wordmark}</span>
+      {sub && <span style={{ marginTop: size * 0.2 }}>{sub}</span>}
     </span>
   );
 }

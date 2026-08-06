@@ -33,7 +33,7 @@ const FULL_LOGO: Asset[] = [
 
 const ICON: Asset[] = [
   { file: "invision-icon.svg", title: "SVG — transparent", note: "Vector · works on light backgrounds" },
-  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · cream cloud, gold beam", dark: true },
+  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · cream line, gold return", dark: true },
   { file: "invision-icon-square.svg", title: "SVG — rounded tile", note: "For platforms that apply their own mask" },
   { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Transparent corners" },
   { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Transparent corners" },
@@ -69,7 +69,7 @@ function AssetCard({ asset }: { asset: Asset }) {
           alt={asset.title}
           width={asset.wide ? 320 : 96}
           height={asset.wide ? 60 : 96}
-          // w-auto, not w-20: the bare mark is 80x50, so a square box squashes it.
+          // w-auto, not w-20: the bare mark is ~1.86:1, so a square box squashes it.
           className={asset.wide ? "h-auto w-full max-w-[240px]" : "h-20 w-auto"}
           unoptimized
         />
@@ -117,17 +117,18 @@ export default function BrandPage() {
             displays.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
-            The mark is a beam driven through a cloud. The cloud is the platform
-            — the estate running somewhere you cannot point at. The beam is the
-            consultant: one line, entering at one edge and leaving at the other
-            without stopping at anything in between. It is cut through the cloud
-            rather than laid across it, which is why it reads as passing
-            through.
+            The mark is a cloud drawn as one continuous line. The stroke traces
+            the silhouette, runs back along the base, then turns inward and
+            stops. The outward pass is the platform — the estate running
+            somewhere you cannot point at. The return is the consultant coming
+            back through it. One line, two tones, no second object.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
-            In the full logo the mark stands in for the O of Invision, so the
-            name and the mark are one object. It also works detached — that is
-            what the favicon, app tile and social avatars use.
+            There is a second, solid form for small sizes. The line itself
+            survives further down than you would expect — it is clean at 20px
+            and still readable at 16 — so the solid form is reserved for the
+            tiles, where the mark sits inside an already-small square. The two
+            are a pair, not an original and a fallback.
           </p>
         </Reveal>
       </Section>
@@ -224,8 +225,8 @@ export default function BrandPage() {
                 Do not stretch, recolour, rotate, or add effects to the logo.
               </li>
               <li>
-                Below about 24px, use the icon on its own rather than the full
-                logo — and below 20px, use the simplified favicon.
+                The line holds down to about 18px. Below that, and for any
+                favicon or avatar, use the tile — it carries the solid form.
               </li>
               <li>
                 The gold is part of the mark. Where a single colour is required,
