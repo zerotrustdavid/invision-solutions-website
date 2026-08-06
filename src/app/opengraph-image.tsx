@@ -29,9 +29,10 @@ export default function OpengraphImage() {
             stacked lockup would crowd it. */}
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <svg width={72 * ASPECT} height={72} viewBox={VIEWBOX} fill="none">
+            {/* Gold line, deep-gold return — the light-tone roles. */}
             <path
               d={CLOUD_ARC}
-              stroke={BRAND_COLOURS.ink}
+              stroke={BRAND_COLOURS.gold}
               strokeWidth={STROKE}
               fill="none"
               strokeLinecap="round"
@@ -39,7 +40,7 @@ export default function OpengraphImage() {
             />
             <path
               d={RETURN_ARC}
-              stroke={BRAND_COLOURS.gold}
+              stroke={BRAND_COLOURS.goldInk}
               strokeWidth={STROKE}
               fill="none"
               strokeLinecap="round"

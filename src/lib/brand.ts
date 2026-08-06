@@ -68,6 +68,25 @@ export const ASPECT = ART.width / ART.height;
  */
 export const SOLID_BELOW_PX = 18;
 
+/**
+ * Colour roles for the mark. Gold carries the silhouette in both tones, so the
+ * logo reads as the same object on light and dark; only the return changes.
+ *
+ * Measured contrast against the surface behind it:
+ *   gold line on paper   2.42:1     gold line on ink     7.34:1
+ *   gold line on panel   2.22:1     paper return on ink  17.76:1
+ *   deep-gold return     5.76:1     gold vs deep gold     2.38:1
+ *
+ * The light pairing is soft by design — this was chosen over the ink line
+ * (17.76:1) with those numbers on the table. Contrast minimums do not bind
+ * logos, but it is why the tiles stay ink-on-gold and the favicon stays the
+ * ink tile: at 16px the gold line has nothing left to give.
+ */
+export const MARK_ROLES = {
+  light: { line: "var(--color-gold)", return: "var(--color-gold-ink)" },
+  dark: { line: "var(--color-gold)", return: "var(--color-paper)" },
+} as const;
+
 /** Tile proportions — corner radius, and how much of the tile the mark fills. */
 export const TILE = { radiusRatio: 0.22, fillRatio: 0.66 } as const;
 

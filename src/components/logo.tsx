@@ -1,6 +1,7 @@
 import {
   ART,
   ASPECT,
+  MARK_ROLES,
   CLOUD_ARC,
   CLOUD_CLOSED,
   RETURN_ARC,
@@ -16,8 +17,9 @@ type Tone = "light" | "dark";
 
 /**
  * The mark's two forms. `mono` is the primary: one continuous line, silhouette
- * in the foreground colour and the return in gold. `solid` is what small sizes
- * use, because below SOLID_BELOW_PX the stroke drops under a device pixel.
+ * in `fg` and the return in `accent` — see MARK_ROLES for which is which per
+ * tone. `solid` is what tiles use, since a thin stroke can be masked away
+ * entirely at icon sizes.
  */
 function Artwork({ solid, fg, accent }: { solid: boolean; fg: string; accent: string }) {
   if (solid) {
@@ -107,7 +109,7 @@ function LogoMark({
     );
   }
 
-  const fg = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
+  const roles = MARK_ROLES[tone];
   return (
     <svg
       width={size * ASPECT}
@@ -117,7 +119,7 @@ function LogoMark({
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <Artwork solid={useSolid} fg={fg} accent="var(--color-gold)" />
+      <Artwork solid={useSolid} fg={roles.line} accent={roles.return} />
     </svg>
   );
 }

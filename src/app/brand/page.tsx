@@ -33,7 +33,7 @@ const FULL_LOGO: Asset[] = [
 
 const ICON: Asset[] = [
   { file: "invision-icon.svg", title: "SVG — transparent", note: "Vector · works on light backgrounds" },
-  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · cream line, gold return", dark: true },
+  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · gold line, cream return", dark: true },
   { file: "invision-icon-square.svg", title: "SVG — rounded tile", note: "For platforms that apply their own mask" },
   { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Transparent corners" },
   { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Transparent corners" },
@@ -118,10 +118,11 @@ export default function BrandPage() {
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
             The mark is a cloud drawn as one continuous line. The stroke traces
-            the silhouette, runs back along the base, then turns inward and
-            stops. The outward pass is the platform — the estate running
-            somewhere you cannot point at. The return is the consultant coming
-            back through it. One line, two tones, no second object.
+            the silhouette in gold, runs back along the base, then turns inward
+            in deep gold and stops. The outward pass is the platform — the
+            estate running somewhere you cannot point at. The return is the
+            consultant coming back through it. One line, two tones, no second
+            object.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
             There is a second, solid form for small sizes. The line itself
@@ -229,9 +230,19 @@ export default function BrandPage() {
                 favicon or avatar, use the tile — it carries the solid form.
               </li>
               <li>
-                The gold is part of the mark. Where a single colour is required,
-                use ink on light or white on dark rather than substituting
-                another accent.
+                Gold carries the line in both versions, so the mark reads as
+                the same object either way — only the return changes: deep gold
+                on light, cream on ink.
+              </li>
+              <li>
+                On light backgrounds the gold line measures 2.42:1 against
+                paper. That is a deliberately soft mark, chosen over the higher
+                contrast alternative. Give it room, keep it off busy surfaces,
+                and use the tile wherever it has to compete.
+              </li>
+              <li>
+                Where a single colour is required, use ink on light or white on
+                dark rather than substituting another accent.
               </li>
             </ul>
           </SurfaceCard>

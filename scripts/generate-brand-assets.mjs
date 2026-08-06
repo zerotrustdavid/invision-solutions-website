@@ -22,6 +22,7 @@ const OUT = join(ROOT, "public", "brand");
 const TMP = join(ROOT, ".next", "cache", "brand-fonts");
 
 const GOLD = "#C9A227";
+const GOLD_INK = "#7E6212";
 const INK = "#16181D";
 const PAPER = "#FFFFFF";
 const SLATE = "#5C6068";
@@ -41,8 +42,13 @@ const CAP_RATIO = 0.7;
 const ln = (d, c, w) =>
   `<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
 
-/** The primary form: one continuous line, silhouette then gold return. */
-const markInner = (fg, accent = GOLD) =>
+/**
+ * The primary form: one continuous line. Gold carries the silhouette in both
+ * tones so the logo reads as the same object on light and dark; only the
+ * return changes — deep gold on light, paper on ink. Keep in sync with
+ * MARK_ROLES in src/lib/brand.ts.
+ */
+const markInner = (fg, accent = GOLD_INK) =>
   `  ${ln(CLOUD_ARC, fg, STROKE)}\n  ${ln(RETURN_ARC, accent, STROKE)}`;
 
 /** The small-size form. Used by the tiles, where the mark is under 18px. */
@@ -108,8 +114,9 @@ function outline(font, text, fontSize, { letterSpacing = 0 } = {}) {
 
 /** Bare mark, cropped to the artwork so the SVG's box is the visible mark. */
 function markSvg({ tone = "light", solid = false }) {
-  const fg = tone === "dark" ? PAPER : INK;
-  const inner = solid ? solidInner(fg) : markInner(fg);
+  const fg = GOLD;
+  const accent = tone === "dark" ? PAPER : GOLD_INK;
+  const inner = solid ? solidInner(fg, accent) : markInner(fg, accent);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${ART.width}" height="${ART.height}" viewBox="${VIEWBOX}" fill="none">
 ${inner}
 </svg>`;
@@ -157,7 +164,6 @@ function wordmarkSvg({ display, tone }) {
 /** Stacked lockup: mark over wordmark over a tracked subline, all centred. */
 function lockupSvg({ display, mono, tone }) {
   const col = tone === "dark" ? PAPER : INK;
-  const fg = tone === "dark" ? PAPER : INK;
   const SIZE = 100;
   const w = outline(display, "INVISION", SIZE);
   const sub = outline(mono, "SOLUTIONS", SIZE * 0.25, { letterSpacing: SIZE * 0.16 });
@@ -179,7 +185,7 @@ function lockupSvg({ display, mono, tone }) {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
   <g transform="translate(${((W - markW) / 2 - ART.x * markS).toFixed(3)} ${(markY - ART.y * markS).toFixed(3)}) scale(${markS.toFixed(5)})">
-${markInner(fg)}
+${markInner(GOLD, tone === "dark" ? PAPER : GOLD_INK)}
   </g>
   <g transform="translate(${((W - w.width) / 2).toFixed(3)} ${wordBase.toFixed(3)})"><path d="${w.d}" fill="${col}"/></g>
   <g transform="translate(${((W - sub.width) / 2).toFixed(3)} ${subBase.toFixed(3)})"><path d="${sub.d}" fill="${SLATE}"/></g>
