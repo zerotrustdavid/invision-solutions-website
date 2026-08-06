@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogoMark } from "./logo";
+import { LogoLockup } from "./logo";
 import { SocialLinks } from "./social-icons";
 import { PUBLIC_CONTACT_ADDRESS } from "@/lib/mailboxes";
 
@@ -24,13 +24,11 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-14 sm:px-10">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="max-w-sm">
-            <div className="flex items-center gap-2.5">
-              <LogoMark size={26} />
-              <span className="font-display text-lg font-semibold tracking-tight">
-                <span className="text-ink">In</span>
-                <span className="text-gold-ink">vision</span>
-              </span>
-            </div>
+            {/* field="panel" because the footer sits on the panel tone — the
+                beam's channel is cut in the background colour, so a mismatch
+                leaves a white slot showing through the cloud. */}
+            <LogoLockup size={22} field="panel" />
+
             <p className="mt-4 text-sm leading-relaxed text-slate">
               Founder-led cybersecurity, DevSecOps, and cloud consultancy. One
               principal consultant, direct engagement, enterprise-grade

@@ -1,30 +1,59 @@
 import { ImageResponse } from "next/og";
-import { TILE_GLYPH, tileRailPath, BRAND_COLOURS } from "@/lib/brand";
+import { BEAM, BRAND_COLOURS, CLOUD_BOX, CLOUD_LOBES, TILE } from "@/lib/brand";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 /**
- * Favicon. Uses the ink tile so the mark holds its own against a browser's
- * chrome in either theme — a transparent glyph disappears against a dark tab
- * strip, and the gold stem needs a dark field to carry at 32px.
+ * Favicon. Ink tile rather than a bare mark: a transparent glyph disappears
+ * against a dark tab strip, and the beam needs a dark field to carry at 32px.
  */
 export default function Icon() {
-  const g = TILE_GLYPH;
+  const box = 100;
+  const w = box * TILE.fillRatio;
+  const s = w / CLOUD_BOX.inkWidth;
+  const h = CLOUD_BOX.inkHeight * s;
+  const dx = (box - w) / 2 - CLOUD_BOX.inkLeft * s;
+  const dy = (box - h) / 2 - CLOUD_BOX.inkTop * s;
+
   return new ImageResponse(
     (
-      <svg width={32} height={32} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="40" height="40" rx="9" fill={BRAND_COLOURS.ink} />
-        <path d={tileRailPath(g.topY)} fill={BRAND_COLOURS.paper} />
-        <path d={tileRailPath(g.bottomY)} fill={BRAND_COLOURS.paper} />
-        <rect
-          x={g.stem.x}
-          y={g.stem.y}
-          width={g.stem.w}
-          height={g.stem.h}
-          rx={g.stem.r}
-          fill={BRAND_COLOURS.gold}
-        />
+      <svg width={32} height={32} viewBox={`0 0 ${box} ${box}`} fill="none">
+        <defs>
+          <clipPath id="cloud">
+            {CLOUD_LOBES.map(([x, y, cw, ch, r]) => (
+              <rect key={`${x}-${y}`} x={x} y={y} width={cw} height={ch} rx={r} />
+            ))}
+          </clipPath>
+        </defs>
+        <rect width={box} height={box} rx={box * TILE.radiusRatio} fill={BRAND_COLOURS.ink} />
+        <g transform={`translate(${dx} ${dy}) scale(${s})`}>
+          {CLOUD_LOBES.map(([x, y, cw, ch, r]) => (
+            <rect
+              key={`${x}-${y}`}
+              x={x}
+              y={y}
+              width={cw}
+              height={ch}
+              rx={r}
+              fill={BRAND_COLOURS.paper}
+            />
+          ))}
+          <g clipPath="url(#cloud)">
+            <path
+              d={BEAM.path}
+              stroke={BRAND_COLOURS.ink}
+              strokeWidth={BEAM.channelWidth}
+              fill="none"
+            />
+            <path
+              d={BEAM.path}
+              stroke={BRAND_COLOURS.gold}
+              strokeWidth={BEAM.width}
+              fill="none"
+            />
+          </g>
+        </g>
       </svg>
     ),
     size,
