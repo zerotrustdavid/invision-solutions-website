@@ -94,3 +94,33 @@ export const TILE = { radiusRatio: 0.22, fillRatio: 0.66 } as const;
 
 /** Space Grotesk cap height, as a fraction of font size. */
 export const CAP_RATIO = 0.7;
+
+/**
+ * Wordmark typography.
+ *
+ * "SOLUTIONS" is set in the display face rather than the mono, and tracked so
+ * it spans exactly the width of "INVISION" above it. That width relationship
+ * is what makes a stacked lockup read as designed instead of typed — every
+ * reference lockup this brand was drawn against does it.
+ *
+ * The size ratio is the lever, not the tracking. At 25% the descriptor needs
+ * 1.28em of tracking to reach the same width, which pulls the letters apart
+ * into confetti. At 45% it needs 0.4615em, which is a normal tracked small-cap
+ * setting. Both values were measured, not estimated.
+ *
+ * Because the name and the descriptor scale together, the em figure is
+ * constant at every size:
+ *   INVISION  @700 = 4.0320em wide
+ *   SOLUTIONS @500 = 5.2683em wide at its own size
+ *   ls = (4.0320 - 0.45 x 5.2683) / 8 gaps / 0.45 = 0.4615em
+ *
+ * The name itself is set with no negative tracking. Uppercase needs neutral or
+ * slightly open spacing; `tracking-tight` on caps is what made the old lockup
+ * look pinched.
+ */
+export const WORDMARK = {
+  /** Descriptor size, as a fraction of the wordmark's font size. */
+  sublineRatio: 0.45,
+  /** Descriptor tracking, in em of its own size. Spans the name exactly. */
+  sublineTracking: 0.4615,
+} as const;

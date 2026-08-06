@@ -7,6 +7,7 @@ import {
   STROKE,
   TILE,
   VIEWBOX,
+  WORDMARK,
 } from "@/lib/brand";
 
 /**
@@ -106,8 +107,9 @@ function LogoLockup({
   orientation?: "stacked" | "row";
 }) {
   const wordmark = (
+    // No negative tracking: uppercase wants neutral or slightly open spacing.
     <span
-      className="whitespace-nowrap font-display font-bold tracking-tight text-ink"
+      className="whitespace-nowrap font-display font-bold text-ink"
       style={{ fontSize: size }}
     >
       INVISION
@@ -115,10 +117,16 @@ function LogoLockup({
   );
   const sub = subline && (
     <span
-      className="whitespace-nowrap font-mono uppercase text-slate"
-      // Floored at 9px: at the sizes the footer and nav use, a straight 0.25
-      // ratio lands around 5px, which is present but unreadable.
-      style={{ letterSpacing: "0.32em", fontSize: Math.max(size * 0.25, 9) }}
+      className="whitespace-nowrap font-display uppercase text-slate"
+      style={{
+        fontSize: size * WORDMARK.sublineRatio,
+        fontWeight: 500,
+        letterSpacing: `${WORDMARK.sublineTracking}em`,
+        // CSS adds letter-spacing after the last glyph too, which would push a
+        // centred subline off by half that. Pull the trailing space back so it
+        // centres on the name and spans it exactly.
+        marginRight: `-${WORDMARK.sublineTracking}em`,
+      }}
     >
       Solutions
     </span>
@@ -140,7 +148,7 @@ function LogoLockup({
     <span className="inline-flex flex-col items-center leading-none">
       <LogoMark size={size * 1.5} />
       <span style={{ marginTop: size * 0.34 }}>{wordmark}</span>
-      {sub && <span style={{ marginTop: size * 0.2 }}>{sub}</span>}
+      {sub && <span style={{ marginTop: size * 0.3 }}>{sub}</span>}
     </span>
   );
 }

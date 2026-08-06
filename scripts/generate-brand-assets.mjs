@@ -35,6 +35,8 @@ const ART = { x: 13.2, y: 19.9, width: 98.6, height: 52.9 };
 const VIEWBOX = `${ART.x} ${ART.y} ${ART.width} ${ART.height}`;
 const TILE = { radiusRatio: 0.22, fillRatio: 0.66 };
 const CAP_RATIO = 0.7;
+// Descriptor sizing/tracking — mirrors WORDMARK in src/lib/brand.ts.
+const SUBLINE_RATIO = 0.45;
 
 const ln = (d, c, w) =>
   `<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
@@ -133,24 +135,40 @@ function faviconSvg() {
   return tileSvg();
 }
 
-/** Wordmark: the name alone, for places that already carry the mark. */
-function wordmarkSvg({ display }) {
+/**
+ * Wordmark: the full company name set as type, for places that already carry
+ * the mark. It includes the descriptor — a letterhead or an email signature
+ * using this should still read "Invision Solutions", not just "Invision".
+ */
+function wordmarkSvg({ display, displayMid }) {
   const SIZE = 100;
   const w = outline(display, "INVISION", SIZE);
+  const subSize = SIZE * SUBLINE_RATIO;
+  const natural = outline(displayMid, "SOLUTIONS", subSize).width;
+  const ls = (w.width - natural) / ("SOLUTIONS".length - 1);
+  const sub = outline(displayMid, "SOLUTIONS", subSize, { letterSpacing: ls });
   const cap = SIZE * CAP_RATIO;
+  const gapSub = SIZE * 0.22;
   const pad = 16;
-  const W = Math.round(w.width + pad * 2);
-  const H = Math.round(cap + pad * 2);
+  const W = Math.round(Math.max(w.width, sub.width) + pad * 2);
+  const H = Math.round(cap + gapSub + subSize + pad * 2);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
-  <g transform="translate(${pad} ${pad + cap})"><path d="${w.d}" fill="${INK}"/></g>
+  <g transform="translate(${((W - w.width) / 2).toFixed(3)} ${pad + cap})"><path d="${w.d}" fill="${INK}"/></g>
+  <g transform="translate(${((W - sub.width) / 2).toFixed(3)} ${(pad + cap + gapSub + subSize).toFixed(3)})"><path d="${sub.d}" fill="${SLATE}"/></g>
 </svg>`;
 }
 
 /** Stacked lockup: mark over wordmark over a tracked subline, all centred. */
-function lockupSvg({ display, mono }) {
+function lockupSvg({ display, displayMid }) {
   const SIZE = 100;
   const w = outline(display, "INVISION", SIZE);
-  const sub = outline(mono, "SOLUTIONS", SIZE * 0.25, { letterSpacing: SIZE * 0.16 });
+  // Track the descriptor so it spans the name exactly. Solved here from the
+  // real advance widths rather than using the constant, so the two can never
+  // drift apart if the face changes.
+  const subSize = SIZE * SUBLINE_RATIO;
+  const natural = outline(displayMid, "SOLUTIONS", subSize).width;
+  const ls = (w.width - natural) / ("SOLUTIONS".length - 1);
+  const sub = outline(displayMid, "SOLUTIONS", subSize, { letterSpacing: ls });
   const cap = SIZE * CAP_RATIO;
 
   const markH = SIZE * 1.05;
@@ -161,11 +179,11 @@ function lockupSvg({ display, mono }) {
   const gapSub = SIZE * 0.22;
   const pad = 20;
   const W = Math.round(Math.max(markW, w.width, sub.width) + pad * 2);
-  const H = Math.round(markH + gapMark + cap + gapSub + SIZE * 0.25 + pad * 2);
+  const H = Math.round(markH + gapMark + cap + gapSub + subSize + pad * 2);
 
   const markY = pad;
   const wordBase = markY + markH + gapMark + cap;
-  const subBase = wordBase + gapSub + SIZE * 0.25;
+  const subBase = wordBase + gapSub + subSize;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
   <g transform="translate(${((W - markW) / 2 - ART.x * markS).toFixed(3)} ${(markY - ART.y * markS).toFixed(3)}) scale(${markS.toFixed(5)})">
@@ -183,8 +201,11 @@ async function png(svg, file, width, height) {
 
 const main = async () => {
   mkdirSync(OUT, { recursive: true });
-  const display = (await loadFontAsync("space_grotesk", "space-grotesk")).getVariation({ wght: 700 });
-  const mono = await loadFontAsync("ibm_plex_mono", "ibm-plex-mono");
+  const grotesk = await loadFontAsync("space_grotesk", "space-grotesk");
+  const display = grotesk.getVariation({ wght: 700 });
+  // The descriptor is set in the display face at 500, not the mono — a tracked
+  // monospace reads as a code label rather than part of the name.
+  const displayMid = grotesk.getVariation({ wght: 500 });
 
   const written = [];
   const write = (name, content) => {
@@ -210,13 +231,13 @@ const main = async () => {
   }
 
   // ---- Wordmark ---------------------------------------------------------
-  const wm = wordmarkSvg({ display });
+  const wm = wordmarkSvg({ display, displayMid });
   write("invision-wordmark.svg", wm);
   await png(wm, "invision-wordmark-2048.png", 2048);
   written.push("invision-wordmark-2048.png");
 
   // ---- Full lockup ------------------------------------------------------
-  const lock = lockupSvg({ display, mono });
+  const lock = lockupSvg({ display, displayMid });
   write("invision-logo.svg", lock);
   for (const px of [4096, 2048]) {
     await png(lock, `invision-logo-${px}.png`, px);
