@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { LogoLockup, LogoMark } from "./logo";
+import { LogoLockup } from "./logo";
 
 const NAV_LINKS = [
   { href: "/services", label: "Services" },
@@ -28,14 +28,14 @@ function Header() {
           className="shrink-0"
         >
           {/* The nav bar is too shallow for the stacked lockup, so it uses the
-              row orientation with the subline dropped. */}
+              row orientation with the subline dropped. Mobile takes the same
+              lockup a size down — the tile is no use here now that its field is
+              white like the bar behind it, and it only shrank the mark. */}
           <span className="hidden sm:inline-flex">
             <LogoLockup size={22} subline={false} orientation="row" />
           </span>
-          {/* Tile on mobile: the bare mark reads too quietly next to the
-              hamburger, and the solid field holds its own at this size. */}
           <span className="inline-flex sm:hidden">
-            <LogoMark size={32} tile />
+            <LogoLockup size={18} subline={false} orientation="row" />
           </span>
         </Link>
 

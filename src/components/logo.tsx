@@ -1,47 +1,28 @@
 import {
   ART,
   ASPECT,
-  MARK_ROLES,
   CLOUD_ARC,
-  CLOUD_CLOSED,
+  MARK_COLOURS,
   RETURN_ARC,
-  RETURN_SOLID,
-  SOLID_BELOW_PX,
   STROKE,
-  STROKE_SOLID,
   TILE,
   VIEWBOX,
 } from "@/lib/brand";
 
-type Tone = "light" | "dark";
-
 /**
- * The mark's two forms. `mono` is the primary: one continuous line, silhouette
- * in `fg` and the return in `accent` — see MARK_ROLES for which is which per
- * tone. `solid` is what tiles use, since a thin stroke can be masked away
- * entirely at icon sizes.
+ * The mark: a cloud drawn as one continuous line, gold silhouette and
+ * deep-gold return, on a white field.
+ *
+ * There is one version. No light/dark colourway, no inverted variant, and no
+ * solid stand-in at small sizes — the tile, favicon and app icon all carry
+ * this exact artwork on white.
  */
-function Artwork({ solid, fg, accent }: { solid: boolean; fg: string; accent: string }) {
-  if (solid) {
-    return (
-      <>
-        <path d={CLOUD_CLOSED} fill={fg} />
-        <path
-          d={RETURN_SOLID}
-          stroke={accent}
-          strokeWidth={STROKE_SOLID}
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </>
-    );
-  }
+function Artwork() {
   return (
     <>
       <path
         d={CLOUD_ARC}
-        stroke={fg}
+        stroke={MARK_COLOURS.line}
         strokeWidth={STROKE}
         fill="none"
         strokeLinecap="round"
@@ -49,7 +30,7 @@ function Artwork({ solid, fg, accent }: { solid: boolean; fg: string; accent: st
       />
       <path
         d={RETURN_ARC}
-        stroke={accent}
+        stroke={MARK_COLOURS.return}
         strokeWidth={STROKE}
         fill="none"
         strokeLinecap="round"
@@ -61,29 +42,11 @@ function Artwork({ solid, fg, accent }: { solid: boolean; fg: string; accent: st
 
 /**
  * `size` is the mark's height in pixels. Width follows from the artwork's
- * aspect — the mark is roughly 1.86:1, not square, so never constrain it to a
- * square box.
+ * aspect — the mark is roughly 1.86:1, so never constrain it to a square box.
+ * `tile` puts it on a white rounded square for icons and avatars.
  */
-function LogoMark({
-  size = 32,
-  tone = "light",
-  tile = false,
-  solid,
-}: {
-  size?: number;
-  tone?: Tone;
-  tile?: boolean;
-  solid?: boolean;
-}) {
-  const useSolid = solid ?? size < SOLID_BELOW_PX;
-
+function LogoMark({ size = 32, tile = false }: { size?: number; tile?: boolean }) {
   if (tile) {
-    // Tiles are always solid: they are used at favicon and avatar sizes, and a
-    // platform mask can crop a thin stroke away entirely.
-    const field = tone === "dark" ? "var(--color-ink)" : "var(--color-gold)";
-    const fg = tone === "dark" ? "var(--color-paper)" : "var(--color-ink)";
-    // Gold-on-gold would disappear, so the accent flips to paper on gold.
-    const accent = tone === "dark" ? "var(--color-gold)" : "var(--color-paper)";
     const box = 100;
     const w = box * TILE.fillRatio;
     const s = w / ART.width;
@@ -97,19 +60,23 @@ function LogoMark({
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <rect width={box} height={box} rx={box * TILE.radiusRatio} fill={field} />
+        <rect
+          width={box}
+          height={box}
+          rx={box * TILE.radiusRatio}
+          fill={MARK_COLOURS.field}
+        />
         <g
           transform={`translate(${(box - w) / 2 - ART.x * s} ${
             (box - h) / 2 - ART.y * s
           }) scale(${s})`}
         >
-          <Artwork solid fg={fg} accent={accent} />
+          <Artwork />
         </g>
       </svg>
     );
   }
 
-  const roles = MARK_ROLES[tone];
   return (
     <svg
       width={size * ASPECT}
@@ -119,31 +86,28 @@ function LogoMark({
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <Artwork solid={useSolid} fg={roles.line} accent={roles.return} />
+      <Artwork />
     </svg>
   );
 }
 
 /**
- * Lockup. Stacked by default — mark over wordmark over a tracked subline,
- * which is how the mark is meant to be seen. `orientation="row"` puts the mark
- * beside the wordmark for shallow spaces like the nav bar.
+ * Lockup. Stacked by default — mark over wordmark over a tracked subline.
+ * `orientation="row"` puts the mark beside the wordmark for shallow spaces
+ * like the nav bar.
  */
 function LogoLockup({
   size = 32,
   subline = true,
-  tone = "light",
   orientation = "stacked",
 }: {
   size?: number;
   subline?: boolean;
-  tone?: Tone;
   orientation?: "stacked" | "row";
 }) {
-  const letters = tone === "dark" ? "text-paper" : "text-ink";
   const wordmark = (
     <span
-      className={`whitespace-nowrap font-display font-bold tracking-tight ${letters}`}
+      className="whitespace-nowrap font-display font-bold tracking-tight text-ink"
       style={{ fontSize: size }}
     >
       INVISION
@@ -163,7 +127,7 @@ function LogoLockup({
   if (orientation === "row") {
     return (
       <span className="inline-flex items-center gap-2.5">
-        <LogoMark size={size * 1.15} tone={tone} />
+        <LogoMark size={size * 1.15} />
         <span className="flex flex-col leading-none">
           {wordmark}
           {sub}
@@ -174,7 +138,7 @@ function LogoLockup({
 
   return (
     <span className="inline-flex flex-col items-center leading-none">
-      <LogoMark size={size * 1.5} tone={tone} />
+      <LogoMark size={size * 1.5} />
       <span style={{ marginTop: size * 0.34 }}>{wordmark}</span>
       {sub && <span style={{ marginTop: size * 0.2 }}>{sub}</span>}
     </span>

@@ -29,11 +29,8 @@ const SLATE = "#5C6068";
 
 // Geometry — keep in sync with src/lib/brand.ts
 const CLOUD_ARC = "M30 70 A14 14 0 0 1 30 42 A20 20 0 0 1 68 34 A16 16 0 0 1 96 44 A13 13 0 0 1 96 70";
-const CLOUD_CLOSED = `${CLOUD_ARC} Z`;
 const RETURN_ARC = "M96 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
-const RETURN_SOLID = "M92 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
 const STROKE = 5.5;
-const STROKE_SOLID = 7;
 const ART = { x: 13.2, y: 19.9, width: 98.6, height: 52.9 };
 const VIEWBOX = `${ART.x} ${ART.y} ${ART.width} ${ART.height}`;
 const TILE = { radiusRatio: 0.22, fillRatio: 0.66 };
@@ -43,17 +40,13 @@ const ln = (d, c, w) =>
   `<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
 
 /**
- * The primary form: one continuous line. Gold carries the silhouette in both
- * tones so the logo reads as the same object on light and dark; only the
- * return changes — deep gold on light, paper on ink. Keep in sync with
- * MARK_ROLES in src/lib/brand.ts.
+ * The mark: gold line, deep-gold return. One colourway, no tone variants —
+ * the tile and favicon put this exact artwork on white rather than inverting
+ * it or swapping in a solid form. Keep in sync with MARK_COLOURS in
+ * src/lib/brand.ts.
  */
-const markInner = (fg, accent = GOLD_INK) =>
-  `  ${ln(CLOUD_ARC, fg, STROKE)}\n  ${ln(RETURN_ARC, accent, STROKE)}`;
-
-/** The small-size form. Used by the tiles, where the mark is under 18px. */
-const solidInner = (fg, accent = GOLD) =>
-  `  <path d="${CLOUD_CLOSED}" fill="${fg}"/>\n  ${ln(RETURN_SOLID, accent, STROKE_SOLID)}`;
+const markInner = () =>
+  `  ${ln(CLOUD_ARC, GOLD, STROKE)}\n  ${ln(RETURN_ARC, GOLD_INK, STROKE)}`;
 
 /** Find a Next-downloaded webfont by the CSS module that declares it. */
 function findWoff2(cssNeedle) {
@@ -113,43 +106,35 @@ function outline(font, text, fontSize, { letterSpacing = 0 } = {}) {
 }
 
 /** Bare mark, cropped to the artwork so the SVG's box is the visible mark. */
-function markSvg({ tone = "light", solid = false }) {
-  const fg = GOLD;
-  const accent = tone === "dark" ? PAPER : GOLD_INK;
-  const inner = solid ? solidInner(fg, accent) : markInner(fg, accent);
+function markSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${ART.width}" height="${ART.height}" viewBox="${VIEWBOX}" fill="none">
-${inner}
+${markInner()}
 </svg>`;
 }
 
-/** Square tile — always the solid form, since tiles are read at icon sizes. */
-function tileSvg({ tone = "light" }) {
+/** Square tile — the mark on a white field, for icons and avatars. */
+function tileSvg() {
   const box = 100;
-  const field = tone === "dark" ? INK : GOLD;
-  const fg = tone === "dark" ? PAPER : INK;
-  // Gold on gold would disappear, so the accent flips to paper on the gold tile.
-  const accent = tone === "dark" ? GOLD : PAPER;
   const w = box * TILE.fillRatio;
   const s = w / ART.width;
   const h = ART.height * s;
   const dx = (box - w) / 2 - ART.x * s;
   const dy = (box - h) / 2 - ART.y * s;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${box}" height="${box}" viewBox="0 0 ${box} ${box}" fill="none">
-  <rect width="${box}" height="${box}" rx="${box * TILE.radiusRatio}" fill="${field}"/>
+  <rect width="${box}" height="${box}" rx="${box * TILE.radiusRatio}" fill="${PAPER}"/>
   <g transform="translate(${dx.toFixed(3)} ${dy.toFixed(3)}) scale(${s.toFixed(5)})">
-${solidInner(fg, accent)}
+${markInner()}
   </g>
 </svg>`;
 }
 
-/** Favicon. Ink tile, solid form — legible at 16px, holds on a dark tab strip. */
+/** Favicon. The white tile — the field is what holds it on a dark tab strip. */
 function faviconSvg() {
-  return tileSvg({ tone: "dark" });
+  return tileSvg();
 }
 
 /** Wordmark: the name alone, for places that already carry the mark. */
-function wordmarkSvg({ display, tone }) {
-  const col = tone === "dark" ? PAPER : INK;
+function wordmarkSvg({ display }) {
   const SIZE = 100;
   const w = outline(display, "INVISION", SIZE);
   const cap = SIZE * CAP_RATIO;
@@ -157,13 +142,12 @@ function wordmarkSvg({ display, tone }) {
   const W = Math.round(w.width + pad * 2);
   const H = Math.round(cap + pad * 2);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
-  <g transform="translate(${pad} ${pad + cap})"><path d="${w.d}" fill="${col}"/></g>
+  <g transform="translate(${pad} ${pad + cap})"><path d="${w.d}" fill="${INK}"/></g>
 </svg>`;
 }
 
 /** Stacked lockup: mark over wordmark over a tracked subline, all centred. */
-function lockupSvg({ display, mono, tone }) {
-  const col = tone === "dark" ? PAPER : INK;
+function lockupSvg({ display, mono }) {
   const SIZE = 100;
   const w = outline(display, "INVISION", SIZE);
   const sub = outline(mono, "SOLUTIONS", SIZE * 0.25, { letterSpacing: SIZE * 0.16 });
@@ -185,9 +169,9 @@ function lockupSvg({ display, mono, tone }) {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
   <g transform="translate(${((W - markW) / 2 - ART.x * markS).toFixed(3)} ${(markY - ART.y * markS).toFixed(3)}) scale(${markS.toFixed(5)})">
-${markInner(GOLD, tone === "dark" ? PAPER : GOLD_INK)}
+${markInner()}
   </g>
-  <g transform="translate(${((W - w.width) / 2).toFixed(3)} ${wordBase.toFixed(3)})"><path d="${w.d}" fill="${col}"/></g>
+  <g transform="translate(${((W - w.width) / 2).toFixed(3)} ${wordBase.toFixed(3)})"><path d="${w.d}" fill="${INK}"/></g>
   <g transform="translate(${((W - sub.width) / 2).toFixed(3)} ${subBase.toFixed(3)})"><path d="${sub.d}" fill="${SLATE}"/></g>
 </svg>`;
 }
@@ -209,42 +193,34 @@ const main = async () => {
   };
 
   // ---- Icon -------------------------------------------------------------
-  const iconLight = markSvg({ tone: "light" });
-  const iconDark = markSvg({ tone: "dark" });
-  const iconSquare = tileSvg({ tone: "light" });
-  const iconSquareDark = tileSvg({ tone: "dark" });
-  write("invision-icon.svg", iconLight);
-  write("invision-icon-dark.svg", iconDark);
-  write("invision-icon-square.svg", iconSquare);
-  write("invision-icon-square-dark.svg", iconSquareDark);
+  const icon = markSvg();
+  const tile = tileSvg();
+  write("invision-icon.svg", icon);
+  write("invision-icon-square.svg", tile);
   write("invision-favicon.svg", faviconSvg());
-  for (const s of [2048, 1024, 512, 256]) {
-    // Width only — the bare mark is 80x50, and forcing it square would crop or
+  for (const px of [2048, 1024, 512, 256]) {
+    // Width only — the mark is ~1.86:1, and forcing it square would crop or
     // stretch it. Only the tile below is genuinely square.
-    await png(iconLight, `invision-icon-${s}.png`, s);
-    written.push(`invision-icon-${s}.png`);
+    await png(icon, `invision-icon-${px}.png`, px);
+    written.push(`invision-icon-${px}.png`);
   }
-  await png(iconSquare, "invision-icon-square-512.png", 512, 512);
-  written.push("invision-icon-square-512.png");
+  for (const px of [1024, 512, 256]) {
+    await png(tile, `invision-icon-square-${px}.png`, px, px);
+    written.push(`invision-icon-square-${px}.png`);
+  }
 
   // ---- Wordmark ---------------------------------------------------------
-  const wmLight = wordmarkSvg({ display, tone: "light" });
-  const wmDark = wordmarkSvg({ display, tone: "dark" });
-  write("invision-wordmark-light.svg", wmLight);
-  write("invision-wordmark-dark.svg", wmDark);
-  await png(wmLight, "invision-wordmark-light-2048.png", 2048);
-  await png(wmDark, "invision-wordmark-dark-2048.png", 2048);
-  written.push("invision-wordmark-light-2048.png", "invision-wordmark-dark-2048.png");
+  const wm = wordmarkSvg({ display });
+  write("invision-wordmark.svg", wm);
+  await png(wm, "invision-wordmark-2048.png", 2048);
+  written.push("invision-wordmark-2048.png");
 
   // ---- Full lockup ------------------------------------------------------
-  const lockLight = lockupSvg({ display, mono, tone: "light" });
-  const lockDark = lockupSvg({ display, mono, tone: "dark" });
-  write("invision-logo-light.svg", lockLight);
-  write("invision-logo-dark.svg", lockDark);
-  for (const s of [4096, 2048]) {
-    await png(lockLight, `invision-logo-light-${s}.png`, s);
-    await png(lockDark, `invision-logo-dark-${s}.png`, s);
-    written.push(`invision-logo-light-${s}.png`, `invision-logo-dark-${s}.png`);
+  const lock = lockupSvg({ display, mono });
+  write("invision-logo.svg", lock);
+  for (const px of [4096, 2048]) {
+    await png(lock, `invision-logo-${px}.png`, px);
+    written.push(`invision-logo-${px}.png`);
   }
 
   console.log(`Wrote ${written.length} files to public/brand/`);
