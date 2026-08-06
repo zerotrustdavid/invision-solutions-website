@@ -16,37 +16,34 @@ type Asset = {
   file: string;
   title: string;
   note: string;
-  /** Preview background — dark assets need a dark plate to be visible. */
-  dark?: boolean;
   /** Constrain preview height for wide lockups. */
   wide?: boolean;
+  /** Show on a neutral plate — a white tile is invisible on a white one. */
+  plate?: boolean;
 };
 
 const FULL_LOGO: Asset[] = [
-  { file: "invision-logo-light.svg", title: "SVG — for light backgrounds", note: "Vector · scales to any size", wide: true },
-  { file: "invision-logo-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · scales to any size", dark: true, wide: true },
-  { file: "invision-logo-light-4096.png", title: "PNG — light backgrounds", note: "4096px wide · transparent", wide: true },
-  { file: "invision-logo-dark-4096.png", title: "PNG — dark backgrounds", note: "4096px wide · transparent", dark: true, wide: true },
-  { file: "invision-logo-light-2048.png", title: "PNG — light, medium", note: "2048px wide · transparent", wide: true },
-  { file: "invision-logo-dark-2048.png", title: "PNG — dark, medium", note: "2048px wide · transparent", dark: true, wide: true },
+  { file: "invision-logo.svg", title: "SVG — vector", note: "Scales to any size without quality loss", wide: true },
+  { file: "invision-logo-4096.png", title: "PNG — 4096px", note: "Print and large displays · transparent", wide: true },
+  { file: "invision-logo-2048.png", title: "PNG — 2048px", note: "Screen and documents · transparent", wide: true },
 ];
 
 const ICON: Asset[] = [
-  { file: "invision-icon.svg", title: "SVG — transparent", note: "Vector · works on light backgrounds" },
-  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · gold line, cream return", dark: true },
-  { file: "invision-icon-square.svg", title: "SVG — rounded tile", note: "For platforms that apply their own mask" },
-  { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Transparent corners" },
-  { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Transparent corners" },
-  { file: "invision-icon-512.png", title: "PNG — 512px", note: "App icon size" },
-  { file: "invision-icon-256.png", title: "PNG — 256px", note: "Small icon size" },
-  { file: "invision-favicon.svg", title: "SVG — favicon", note: "Ink tile · legible at 16px" },
+  { file: "invision-icon.svg", title: "SVG — mark only", note: "Transparent · for white and near-white surfaces" },
+  { plate: true, file: "invision-icon-square.svg", title: "SVG — white tile", note: "For app icons, avatars, and platform masks" },
+  { plate: true, file: "invision-favicon.svg", title: "SVG — favicon", note: "The white tile, at favicon size" },
+  { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Mark only · transparent" },
+  { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Mark only · transparent" },
+  { file: "invision-icon-512.png", title: "PNG — 512px", note: "Mark only · transparent" },
+  { file: "invision-icon-256.png", title: "PNG — 256px", note: "Mark only · transparent" },
+  { plate: true, file: "invision-icon-square-1024.png", title: "PNG tile — 1024px", note: "White tile · app icon size" },
+  { plate: true, file: "invision-icon-square-512.png", title: "PNG tile — 512px", note: "White tile · app icon size" },
+  { plate: true, file: "invision-icon-square-256.png", title: "PNG tile — 256px", note: "White tile · small icon size" },
 ];
 
 const WORDMARK: Asset[] = [
-  { file: "invision-wordmark-light.svg", title: "SVG — light backgrounds", note: "Vector · type converted to outlines", wide: true },
-  { file: "invision-wordmark-dark.svg", title: "SVG — dark backgrounds", note: "Vector · type converted to outlines", dark: true, wide: true },
-  { file: "invision-wordmark-light-2048.png", title: "PNG — light backgrounds", note: "2048px wide · transparent", wide: true },
-  { file: "invision-wordmark-dark-2048.png", title: "PNG — dark backgrounds", note: "2048px wide · transparent", dark: true, wide: true },
+  { file: "invision-wordmark.svg", title: "SVG — vector", note: "Type converted to outlines", wide: true },
+  { file: "invision-wordmark-2048.png", title: "PNG — 2048px", note: "Transparent", wide: true },
 ];
 
 const COLOURS = [
@@ -61,8 +58,10 @@ const COLOURS = [
 function AssetCard({ asset }: { asset: Asset }) {
   return (
     <SurfaceCard className="!p-0 overflow-hidden">
+      {/* Paper plate by default. Tile assets get a neutral one, or their white
+          field would be invisible against it. */}
       <div
-        className={`flex items-center justify-center px-6 py-10 ${asset.dark ? "bg-ink" : "bg-paper"}`}
+        className={`flex items-center justify-center px-6 py-10 ${asset.plate ? "bg-[#DEDCD5]" : "bg-paper"}`}
       >
         <Image
           src={`/brand/${asset.file}`}
@@ -125,11 +124,10 @@ export default function BrandPage() {
             object.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
-            There is a second, solid form for small sizes. The line itself
-            survives further down than you would expect — it is clean at 20px
-            and still readable at 16 — so the solid form is reserved for the
-            tiles, where the mark sits inside an already-small square. The two
-            are a pair, not an original and a fallback.
+            There is one version and no variants. Where the mark cannot sit on
+            white — an app icon, an avatar, a dark surface — the white tile
+            carries it, rather than the artwork being recoloured or swapped for
+            a heavier one.
           </p>
         </Reveal>
       </Section>
@@ -215,34 +213,23 @@ export default function BrandPage() {
             </h2>
             <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-slate">
               <li>
-                Leave clear space around the logo of at least the height of the
-                mark.
+                There is one version of the mark. No dark colourway, no
+                inverted variant, and no heavier stand-in at small sizes — the
+                tile, favicon and app icon all carry this exact artwork.
               </li>
               <li>
-                Use the light version on light backgrounds and the dark version
-                on dark ones — do not place either on a busy photograph.
+                On anything other than white or near-white, use the white tile
+                rather than recolouring the mark. The white field is part of
+                the logo.
               </li>
               <li>
                 Do not stretch, recolour, rotate, or add effects to the logo.
+                Do not place it on a busy photograph.
               </li>
               <li>
-                The line holds down to about 18px. Below that, and for any
-                favicon or avatar, use the tile — it carries the solid form.
-              </li>
-              <li>
-                Gold carries the line in both versions, so the mark reads as
-                the same object either way — only the return changes: deep gold
-                on light, cream on ink.
-              </li>
-              <li>
-                On light backgrounds the gold line measures 2.42:1 against
-                paper. That is a deliberately soft mark, chosen over the higher
-                contrast alternative. Give it room, keep it off busy surfaces,
-                and use the tile wherever it has to compete.
-              </li>
-              <li>
-                Where a single colour is required, use ink on light or white on
-                dark rather than substituting another accent.
+                Leave clear space around it of at least the height of the mark.
+                The gold line measures 2.42:1 against paper — it is a soft mark
+                by design, and space is what lets it hold its own.
               </li>
             </ul>
           </SurfaceCard>

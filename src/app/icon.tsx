@@ -1,20 +1,13 @@
 import { ImageResponse } from "next/og";
-import {
-  ART,
-  BRAND_COLOURS,
-  CLOUD_CLOSED,
-  RETURN_SOLID,
-  STROKE_SOLID,
-  TILE,
-} from "@/lib/brand";
+import { ART, BRAND_COLOURS, CLOUD_ARC, RETURN_ARC, STROKE, TILE } from "@/lib/brand";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 /**
- * Favicon. Ink tile and the solid form — at 32px the monoline's 5.5 stroke
- * lands under a device pixel, and a transparent mark vanishes against a dark
- * tab strip either way.
+ * Favicon. The same mark as everywhere else — gold line, deep-gold return, on
+ * a white tile. The white field is what keeps it visible against a dark tab
+ * strip; the artwork itself is not substituted for a heavier one at this size.
  */
 export default function Icon() {
   const box = 100;
@@ -29,18 +22,25 @@ export default function Icon() {
           width={box}
           height={box}
           rx={box * TILE.radiusRatio}
-          fill={BRAND_COLOURS.ink}
+          fill={BRAND_COLOURS.paper}
         />
         <g
           transform={`translate(${(box - w) / 2 - ART.x * s} ${
             (box - h) / 2 - ART.y * s
           }) scale(${s})`}
         >
-          <path d={CLOUD_CLOSED} fill={BRAND_COLOURS.paper} />
           <path
-            d={RETURN_SOLID}
+            d={CLOUD_ARC}
             stroke={BRAND_COLOURS.gold}
-            strokeWidth={STROKE_SOLID}
+            strokeWidth={STROKE}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d={RETURN_ARC}
+            stroke={BRAND_COLOURS.goldInk}
+            strokeWidth={STROKE}
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"

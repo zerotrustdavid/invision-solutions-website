@@ -61,30 +61,32 @@ export const VIEWBOX = `${ART.x} ${ART.y} ${ART.width} ${ART.height}`;
 export const ASPECT = ART.width / ART.height;
 
 /**
- * Under this rendered height, use the solid form. Set from rendering both at
- * 1x and looking, not from arithmetic on the stroke width: at 20px the line
- * still resolves cleanly, and the solid form actually loses the inner curl
- * into its own fill sooner than the monoline does.
+ * The solid form is kept for anyone who needs a filled silhouette, but nothing
+ * in the system switches to it automatically any more. The line is the logo at
+ * every size.
  */
-export const SOLID_BELOW_PX = 18;
+export const SOLID_AVAILABLE = true;
 
 /**
- * Colour roles for the mark. Gold carries the silhouette in both tones, so the
- * logo reads as the same object on light and dark; only the return changes.
+ * The mark's colours. One set, everywhere — gold line, deep-gold return, on a
+ * white field. There is deliberately no light/dark colourway and no small-size
+ * substitution: the tile, the favicon and the app icon all carry this exact
+ * mark on a white field rather than an inverted or solid stand-in.
  *
- * Measured contrast against the surface behind it:
- *   gold line on paper   2.42:1     gold line on ink     7.34:1
- *   gold line on panel   2.22:1     paper return on ink  17.76:1
+ * Measured contrast, for reference rather than as a decision still open:
+ *   gold line on paper   2.42:1     gold line on ink      7.34:1
+ *   gold line on panel   2.22:1     deep-gold on ink      3.08:1
  *   deep-gold return     5.76:1     gold vs deep gold     2.38:1
  *
- * The light pairing is soft by design — this was chosen over the ink line
- * (17.76:1) with those numbers on the table. Contrast minimums do not bind
- * logos, but it is why the tiles stay ink-on-gold and the favicon stays the
- * ink tile: at 16px the gold line has nothing left to give.
+ * The light pairing is soft, and at favicon sizes the return in particular
+ * gives way before the silhouette does. That is a known and accepted property
+ * of this mark, not a defect to route around by swapping in a different one.
  */
-export const MARK_ROLES = {
-  light: { line: "var(--color-gold)", return: "var(--color-gold-ink)" },
-  dark: { line: "var(--color-gold)", return: "var(--color-paper)" },
+export const MARK_COLOURS = {
+  line: "var(--color-gold)",
+  return: "var(--color-gold-ink)",
+  /** Tiles and icons put the mark on white, never on gold or ink. */
+  field: "var(--color-paper)",
 } as const;
 
 /** Tile proportions — corner radius, and how much of the tile the mark fills. */
