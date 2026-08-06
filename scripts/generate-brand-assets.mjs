@@ -27,44 +27,27 @@ const PAPER = "#FFFFFF";
 const SLATE = "#5C6068";
 
 // Geometry — keep in sync with src/lib/brand.ts
-const CLOUD_BOX = { width: 104, height: 66, inkLeft: 12, inkTop: 8, inkWidth: 80, inkHeight: 50 };
-const CLOUD_LOBES = [
-  [12, 32, 30, 26, 10],
-  [32, 8, 44, 50, 17],
-  [64, 24, 28, 34, 12],
-  [12, 38, 80, 20, 9],
-];
-const BEAM = { path: "M4 62 L100 4", width: 10, channelWidth: 19 };
-const TILE = { radiusRatio: 0.22, fillRatio: 0.72 };
+const CLOUD_ARC = "M30 70 A14 14 0 0 1 30 42 A20 20 0 0 1 68 34 A16 16 0 0 1 96 44 A13 13 0 0 1 96 70";
+const CLOUD_CLOSED = `${CLOUD_ARC} Z`;
+const RETURN_ARC = "M96 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
+const RETURN_SOLID = "M92 70 L46 70 A11 11 0 0 1 46 48 A9 9 0 0 1 62 53";
+const STROKE = 5.5;
+const STROKE_SOLID = 7;
+const ART = { x: 13.2, y: 19.9, width: 98.6, height: 52.9 };
+const VIEWBOX = `${ART.x} ${ART.y} ${ART.width} ${ART.height}`;
+const TILE = { radiusRatio: 0.22, fillRatio: 0.66 };
 const CAP_RATIO = 0.7;
 
-const cloudShapes = () =>
-  CLOUD_LOBES.map(([x, y, w, h, r]) =>
-    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/>`).join("");
+const ln = (d, c, w) =>
+  `<path d="${d}" stroke="${c}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
 
-/**
- * Cloud plus beam. The channel either side of the beam is stroked in the field
- * colour, so `field` must be the colour this will actually sit on — get it
- * wrong and the beam reads as lying on top rather than passing through.
- *
- * `id` must be unique per document: duplicate clipPath ids silently resolve to
- * whichever the parser saw first.
- */
-function cloudBeam({ field, body, accent, id }) {
-  return `  <defs><clipPath id="${id}">${cloudShapes()}</clipPath></defs>
-  <g fill="${body}">${cloudShapes()}</g>
-  <g clip-path="url(#${id})">
-    <path d="${BEAM.path}" stroke="${field}" stroke-width="${BEAM.channelWidth}" fill="none"/>
-    <path d="${BEAM.path}" stroke="${accent}" stroke-width="${BEAM.width}" fill="none"/>
-  </g>`;
-}
+/** The primary form: one continuous line, silhouette then gold return. */
+const markInner = (fg, accent = GOLD) =>
+  `  ${ln(CLOUD_ARC, fg, STROKE)}\n  ${ln(RETURN_ARC, accent, STROKE)}`;
 
-/** Cloud body and beam colours for a given tone and field. */
-function roles(tone, field) {
-  // Gold on gold would vanish into its own channel.
-  if (field === GOLD) return { body: INK, accent: PAPER };
-  return tone === "dark" ? { body: PAPER, accent: GOLD } : { body: INK, accent: GOLD };
-}
+/** The small-size form. Used by the tiles, where the mark is under 18px. */
+const solidInner = (fg, accent = GOLD) =>
+  `  <path d="${CLOUD_CLOSED}" fill="${fg}"/>\n  ${ln(RETURN_SOLID, accent, STROKE_SOLID)}`;
 
 /** Find a Next-downloaded webfont by the CSS module that declares it. */
 function findWoff2(cssNeedle) {
@@ -124,96 +107,82 @@ function outline(font, text, fontSize, { letterSpacing = 0 } = {}) {
 }
 
 /** Bare mark, cropped to the artwork so the SVG's box is the visible mark. */
-function markSvg({ tone = "light", id = "m" }) {
-  const field = tone === "dark" ? INK : PAPER;
-  const { body, accent } = roles(tone, field);
-  const b = CLOUD_BOX;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${b.inkWidth}" height="${b.inkHeight}" viewBox="${b.inkLeft} ${b.inkTop} ${b.inkWidth} ${b.inkHeight}" fill="none">
-${cloudBeam({ field, body, accent, id })}
+function markSvg({ tone = "light", solid = false }) {
+  const fg = tone === "dark" ? PAPER : INK;
+  const inner = solid ? solidInner(fg) : markInner(fg);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${ART.width}" height="${ART.height}" viewBox="${VIEWBOX}" fill="none">
+${inner}
 </svg>`;
 }
 
-/** Square tile — a solid field so the mark stays assertive on any backdrop. */
-function tileSvg({ tone = "light", id = "t" }) {
+/** Square tile — always the solid form, since tiles are read at icon sizes. */
+function tileSvg({ tone = "light" }) {
   const box = 100;
   const field = tone === "dark" ? INK : GOLD;
-  const { body, accent } = roles(tone, field);
+  const fg = tone === "dark" ? PAPER : INK;
+  // Gold on gold would disappear, so the accent flips to paper on the gold tile.
+  const accent = tone === "dark" ? GOLD : PAPER;
   const w = box * TILE.fillRatio;
-  const s = w / CLOUD_BOX.inkWidth;
-  const h = CLOUD_BOX.inkHeight * s;
-  const dx = (box - w) / 2 - CLOUD_BOX.inkLeft * s;
-  const dy = (box - h) / 2 - CLOUD_BOX.inkTop * s;
+  const s = w / ART.width;
+  const h = ART.height * s;
+  const dx = (box - w) / 2 - ART.x * s;
+  const dy = (box - h) / 2 - ART.y * s;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${box}" height="${box}" viewBox="0 0 ${box} ${box}" fill="none">
   <rect width="${box}" height="${box}" rx="${box * TILE.radiusRatio}" fill="${field}"/>
   <g transform="translate(${dx.toFixed(3)} ${dy.toFixed(3)}) scale(${s.toFixed(5)})">
-${cloudBeam({ field, body, accent, id })}
+${solidInner(fg, accent)}
   </g>
 </svg>`;
 }
 
-/**
- * Favicon. Always the ink tile — a transparent mark vanishes against a dark tab
- * strip, and the beam needs a dark field to carry at 16px.
- */
+/** Favicon. Ink tile, solid form — legible at 16px, holds on a dark tab strip. */
 function faviconSvg() {
-  return tileSvg({ tone: "dark", id: "fav" });
+  return tileSvg({ tone: "dark" });
 }
 
-/**
- * The wordmark, with the mark standing in for the O of INVISION. Returns the
- * inner markup plus its metrics, so the lockup can centre the subline under it
- * without laying the type out twice.
- */
-function wordmarkParts({ display, tone, size, id }) {
-  const textCol = tone === "dark" ? PAPER : INK;
-  const field = tone === "dark" ? INK : PAPER;
-  const { body, accent } = roles(tone, field);
-  const pre = outline(display, "INVISI", size);
-  const post = outline(display, "N", size);
-  const cap = size * CAP_RATIO;
-  const s = cap / CLOUD_BOX.inkHeight;
-  const cw = CLOUD_BOX.inkWidth * s;
-  const pad = size * 0.045;
-  const width = pre.width + pad * 2 + cw + post.width;
-  // The cloud is placed by its ink extent, not its box: after scaling, its ink
-  // top lands at cap height and its ink foot lands exactly on the baseline.
-  const cx = pre.width + pad - CLOUD_BOX.inkLeft * s;
-  const cy = -cap - CLOUD_BOX.inkTop * s;
-  const inner = `    <path d="${pre.d}" fill="${textCol}"/>
-    <g transform="translate(${cx.toFixed(3)} ${cy.toFixed(3)}) scale(${s.toFixed(5)})">
-${cloudBeam({ field, body, accent, id })}
-    </g>
-    <g transform="translate(${(pre.width + pad * 2 + cw).toFixed(3)} 0)"><path d="${post.d}" fill="${textCol}"/></g>`;
-  return { inner, width, cap };
-}
-
-function wordmarkSvg({ display, tone, id }) {
+/** Wordmark: the name alone, for places that already carry the mark. */
+function wordmarkSvg({ display, tone }) {
+  const col = tone === "dark" ? PAPER : INK;
   const SIZE = 100;
-  const { inner, width, cap } = wordmarkParts({ display, tone, size: SIZE, id });
+  const w = outline(display, "INVISION", SIZE);
+  const cap = SIZE * CAP_RATIO;
   const pad = 16;
+  const W = Math.round(w.width + pad * 2);
   const H = Math.round(cap + pad * 2);
-  const W = Math.round(width + pad * 2);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
-  <g transform="translate(${pad} ${pad + cap})">
-${inner}
-  </g>
+  <g transform="translate(${pad} ${pad + cap})"><path d="${w.d}" fill="${col}"/></g>
 </svg>`;
 }
 
-/** Stacked lockup: wordmark over a tracked subline, both centred. */
-function lockupSvg({ display, mono, tone, id }) {
+/** Stacked lockup: mark over wordmark over a tracked subline, all centred. */
+function lockupSvg({ display, mono, tone }) {
+  const col = tone === "dark" ? PAPER : INK;
+  const fg = tone === "dark" ? PAPER : INK;
   const SIZE = 100;
-  const { inner, width, cap } = wordmarkParts({ display, tone, size: SIZE, id });
-  const sub = outline(mono, "SOLUTIONS", SIZE * 0.24, { letterSpacing: SIZE * 0.14 });
-  const gap = SIZE * 0.3;
-  const pad = 16;
-  const W = Math.round(Math.max(width, sub.width) + pad * 2);
-  const H = Math.round(cap + gap + SIZE * 0.24 + pad * 2);
+  const w = outline(display, "INVISION", SIZE);
+  const sub = outline(mono, "SOLUTIONS", SIZE * 0.25, { letterSpacing: SIZE * 0.16 });
+  const cap = SIZE * CAP_RATIO;
+
+  const markH = SIZE * 1.05;
+  const markS = markH / ART.height;
+  const markW = ART.width * markS;
+
+  const gapMark = SIZE * 0.34;
+  const gapSub = SIZE * 0.22;
+  const pad = 20;
+  const W = Math.round(Math.max(markW, w.width, sub.width) + pad * 2);
+  const H = Math.round(markH + gapMark + cap + gapSub + SIZE * 0.25 + pad * 2);
+
+  const markY = pad;
+  const wordBase = markY + markH + gapMark + cap;
+  const subBase = wordBase + gapSub + SIZE * 0.25;
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="none">
-  <g transform="translate(${((W - width) / 2).toFixed(3)} ${pad + cap})">
-${inner}
+  <g transform="translate(${((W - markW) / 2 - ART.x * markS).toFixed(3)} ${(markY - ART.y * markS).toFixed(3)}) scale(${markS.toFixed(5)})">
+${markInner(fg)}
   </g>
-  <g transform="translate(${((W - sub.width) / 2).toFixed(3)} ${(pad + cap + gap + SIZE * 0.24).toFixed(3)})"><path d="${sub.d}" fill="${SLATE}"/></g>
+  <g transform="translate(${((W - w.width) / 2).toFixed(3)} ${wordBase.toFixed(3)})"><path d="${w.d}" fill="${col}"/></g>
+  <g transform="translate(${((W - sub.width) / 2).toFixed(3)} ${subBase.toFixed(3)})"><path d="${sub.d}" fill="${SLATE}"/></g>
 </svg>`;
 }
 
@@ -234,10 +203,10 @@ const main = async () => {
   };
 
   // ---- Icon -------------------------------------------------------------
-  const iconLight = markSvg({ tone: "light", id: "il" });
-  const iconDark = markSvg({ tone: "dark", id: "id" });
-  const iconSquare = tileSvg({ tone: "light", id: "isq" });
-  const iconSquareDark = tileSvg({ tone: "dark", id: "isqd" });
+  const iconLight = markSvg({ tone: "light" });
+  const iconDark = markSvg({ tone: "dark" });
+  const iconSquare = tileSvg({ tone: "light" });
+  const iconSquareDark = tileSvg({ tone: "dark" });
   write("invision-icon.svg", iconLight);
   write("invision-icon-dark.svg", iconDark);
   write("invision-icon-square.svg", iconSquare);
@@ -253,8 +222,8 @@ const main = async () => {
   written.push("invision-icon-square-512.png");
 
   // ---- Wordmark ---------------------------------------------------------
-  const wmLight = wordmarkSvg({ display, tone: "light", id: "wl" });
-  const wmDark = wordmarkSvg({ display, tone: "dark", id: "wd" });
+  const wmLight = wordmarkSvg({ display, tone: "light" });
+  const wmDark = wordmarkSvg({ display, tone: "dark" });
   write("invision-wordmark-light.svg", wmLight);
   write("invision-wordmark-dark.svg", wmDark);
   await png(wmLight, "invision-wordmark-light-2048.png", 2048);
@@ -262,8 +231,8 @@ const main = async () => {
   written.push("invision-wordmark-light-2048.png", "invision-wordmark-dark-2048.png");
 
   // ---- Full lockup ------------------------------------------------------
-  const lockLight = lockupSvg({ display, mono, tone: "light", id: "ll" });
-  const lockDark = lockupSvg({ display, mono, tone: "dark", id: "ld" });
+  const lockLight = lockupSvg({ display, mono, tone: "light" });
+  const lockDark = lockupSvg({ display, mono, tone: "dark" });
   write("invision-logo-light.svg", lockLight);
   write("invision-logo-dark.svg", lockDark);
   for (const s of [4096, 2048]) {

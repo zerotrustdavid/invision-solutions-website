@@ -24,10 +24,7 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-14 sm:px-10">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="max-w-sm">
-            {/* field="panel" because the footer sits on the panel tone — the
-                beam's channel is cut in the background colour, so a mismatch
-                leaves a white slot showing through the cloud. */}
-            <LogoLockup size={22} field="panel" />
+            <LogoLockup size={20} orientation="row" />
 
             <p className="mt-4 text-sm leading-relaxed text-slate">
               Founder-led cybersecurity, DevSecOps, and cloud consultancy. One
