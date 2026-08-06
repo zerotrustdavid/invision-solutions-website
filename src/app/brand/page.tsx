@@ -33,7 +33,7 @@ const FULL_LOGO: Asset[] = [
 
 const ICON: Asset[] = [
   { file: "invision-icon.svg", title: "SVG — transparent", note: "Vector · works on light backgrounds" },
-  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · light rails, gold stem", dark: true },
+  { file: "invision-icon-dark.svg", title: "SVG — for dark backgrounds", note: "Vector · cream cloud, gold beam", dark: true },
   { file: "invision-icon-square.svg", title: "SVG — rounded tile", note: "For platforms that apply their own mask" },
   { file: "invision-icon-2048.png", title: "PNG — 2048px", note: "Transparent corners" },
   { file: "invision-icon-1024.png", title: "PNG — 1024px", note: "Transparent corners" },
@@ -69,7 +69,8 @@ function AssetCard({ asset }: { asset: Asset }) {
           alt={asset.title}
           width={asset.wide ? 320 : 96}
           height={asset.wide ? 60 : 96}
-          className={asset.wide ? "h-auto w-full max-w-[240px]" : "h-20 w-20"}
+          // w-auto, not w-20: the bare mark is 80x50, so a square box squashes it.
+          className={asset.wide ? "h-auto w-full max-w-[240px]" : "h-20 w-auto"}
           unoptimized
         />
       </div>
@@ -116,12 +117,17 @@ export default function BrandPage() {
             displays.
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
-            The mark is a direct line through the layers. Two rails sit where
-            the intermediaries would be in a conventional consultancy — the
-            account manager, the junior, the chain of approvals — and a single
-            gold stem passes straight through both without stopping at either.
-            The silhouette is a capital&nbsp;I: Invision, and the first person
-            singular this whole brand is written in.
+            The mark is a beam driven through a cloud. The cloud is the platform
+            — the estate running somewhere you cannot point at. The beam is the
+            consultant: one line, entering at one edge and leaving at the other
+            without stopping at anything in between. It is cut through the cloud
+            rather than laid across it, which is why it reads as passing
+            through.
+          </p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate">
+            In the full logo the mark stands in for the O of Invision, so the
+            name and the mark are one object. It also works detached — that is
+            what the favicon, app tile and social avatars use.
           </p>
         </Reveal>
       </Section>

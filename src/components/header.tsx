@@ -21,9 +21,16 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10">
-        <Link href="/" onClick={() => setOpen(false)} aria-label="Invision Solutions home">
+        <Link
+          href="/"
+          onClick={() => setOpen(false)}
+          aria-label="Invision Solutions home"
+          className="shrink-0"
+        >
+          {/* The header bar is too shallow for the stacked lockup's subline, so
+              the nav uses the wordmark alone — the mark is still in it, as the O. */}
           <span className="hidden sm:inline-flex">
-            <LogoLockup size={30} />
+            <LogoLockup size={24} subline={false} />
           </span>
           {/* Tile on mobile: the bare mark reads too quietly next to the
               hamburger, and the solid field holds its own at this size. */}

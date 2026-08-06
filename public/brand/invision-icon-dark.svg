@@ -1,5 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
-  <path d="M3 6 H16.1 V10.4 H3 Z M23.9 6 H37 V10.4 H23.9 Z" fill="#FFFFFF"/>
-  <path d="M3 29.6 H16.1 V34 H3 Z M23.9 29.6 H37 V34 H23.9 Z" fill="#FFFFFF"/>
-  <rect x="16.1" y="2" width="7.8" height="36" rx="1.4" fill="#C9A227"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="50" viewBox="12 8 80 50" fill="none">
+  <defs><clipPath id="id"><rect x="12" y="32" width="30" height="26" rx="10"/><rect x="32" y="8" width="44" height="50" rx="17"/><rect x="64" y="24" width="28" height="34" rx="12"/><rect x="12" y="38" width="80" height="20" rx="9"/></clipPath></defs>
+  <g fill="#FFFFFF"><rect x="12" y="32" width="30" height="26" rx="10"/><rect x="32" y="8" width="44" height="50" rx="17"/><rect x="64" y="24" width="28" height="34" rx="12"/><rect x="12" y="38" width="80" height="20" rx="9"/></g>
+  <g clip-path="url(#id)">
+    <path d="M4 62 L100 4" stroke="#16181D" stroke-width="19" fill="none"/>
+    <path d="M4 62 L100 4" stroke="#C9A227" stroke-width="10" fill="none"/>
+  </g>
 </svg>

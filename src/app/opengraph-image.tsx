@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { RAIL, STEM, railPath, BRAND_COLOURS } from "@/lib/brand";
+import { BEAM, BRAND_COLOURS, CLOUD_BOX, CLOUD_LOBES } from "@/lib/brand";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -18,22 +18,59 @@ export default function OpengraphImage() {
           padding: "84px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <svg width={64} height={64} viewBox="0 0 40 40" fill="none">
-            <path d={railPath(RAIL.topY)} fill={BRAND_COLOURS.ink} />
-            <path d={railPath(RAIL.bottomY)} fill={BRAND_COLOURS.ink} />
-            <rect
-              x={STEM.x}
-              y={STEM.y}
-              width={STEM.w}
-              height={STEM.h}
-              rx={STEM.r}
-              fill={BRAND_COLOURS.gold}
-            />
+        {/* Horizontal secondary lockup. The integrated wordmark needs the mark
+            sat on the text baseline, which Satori does not lay out reliably —
+            so the social card uses the detached mark instead. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+          <svg
+            width={(64 * CLOUD_BOX.inkWidth) / CLOUD_BOX.inkHeight}
+            height={64}
+            viewBox={`${CLOUD_BOX.inkLeft} ${CLOUD_BOX.inkTop} ${CLOUD_BOX.inkWidth} ${CLOUD_BOX.inkHeight}`}
+            fill="none"
+          >
+            <defs>
+              <clipPath id="ogcloud">
+                {CLOUD_LOBES.map(([x, y, w, h, r]) => (
+                  <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} rx={r} />
+                ))}
+              </clipPath>
+            </defs>
+            {CLOUD_LOBES.map(([x, y, w, h, r]) => (
+              <rect
+                key={`${x}-${y}`}
+                x={x}
+                y={y}
+                width={w}
+                height={h}
+                rx={r}
+                fill={BRAND_COLOURS.ink}
+              />
+            ))}
+            <g clipPath="url(#ogcloud)">
+              <path
+                d={BEAM.path}
+                stroke={BRAND_COLOURS.paper}
+                strokeWidth={BEAM.channelWidth}
+                fill="none"
+              />
+              <path
+                d={BEAM.path}
+                stroke={BRAND_COLOURS.gold}
+                strokeWidth={BEAM.width}
+                fill="none"
+              />
+            </g>
           </svg>
-          <div style={{ display: "flex", fontSize: 42, fontWeight: 600 }}>
-            <span style={{ color: BRAND_COLOURS.ink }}>In</span>
-            <span style={{ color: BRAND_COLOURS.goldInk }}>vision</span>
+          <div
+            style={{
+              display: "flex",
+              fontSize: 42,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
+              color: BRAND_COLOURS.ink,
+            }}
+          >
+            INVISION
           </div>
         </div>
 
